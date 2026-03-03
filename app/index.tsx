@@ -241,6 +241,7 @@ const getStyles = (
     headerLeft: {
       flexDirection: "row",
       alignItems: "center",
+      flex: 1,
     },
     logo: {
       width: scale(36),
