@@ -54,10 +54,8 @@ const LandingPage: React.FC = () => {
     // Navigate to dashboard based on role
     if (user.role === "admin") {
       router.replace("/admin/strategic-dashboard" as any);
-      Alert.alert("Thành công", `Chào mừng ${user.name}!`);
     } else {
       router.replace("/(tabs)" as any);
-      Alert.alert("Thành công", `Chào mừng ${user.name}!`);
     }
   };
 
