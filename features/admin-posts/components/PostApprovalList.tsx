@@ -2,11 +2,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
-    FlatList,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { Post } from "../contexts/PostsContext";
 
@@ -108,10 +108,10 @@ export function PostApprovalList({ initialPosts }: { initialPosts?: Post[] }) {
     <View style={styles.headerRow}>
       <Text style={[styles.headerCell, styles.cellStt]}>STT</Text>
       <TouchableOpacity
-        style={[styles.headerCell, styles.cellTitle, styles.sortable]}
+        style={[styles.cellTitle, styles.sortable]}
         onPress={() => handleSort("title")}
       >
-        <Text style={styles.headerText}>Tiêu đề bài đăng</Text>
+        <Text style={[styles.headerText, { paddingRight: 0 }]}>Tiêu đề bài đăng</Text>
         <SortIcon col="title" />
       </TouchableOpacity>
     </View>
