@@ -1,10 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ADMIN_PROFILE_MOCK } from '../data/admin-profile.data';
 
-export function ProfileDetails() {
-    const d = ADMIN_PROFILE_MOCK;
+interface ProfileDetailsProps {
+    profile: any;
+    onChangePasswordPress: () => void;
+}
+
+export function ProfileDetails({ profile, onChangePasswordPress }: ProfileDetailsProps) {
+    const d = profile;
 
     return (
         <View style={styles.container}>
@@ -39,7 +43,7 @@ export function ProfileDetails() {
                     <View style={styles.fullRow}>
                         <Text style={[styles.label, { marginBottom: 8 }]}>Quyền hạn quản lý</Text>
                         <View style={styles.chipGroup}>
-                            {d.permissions.map((perm) => (
+                            {d.permissions.map((perm: string) => (
                                 <View key={perm} style={styles.chip}>
                                     <Text style={styles.chipText}>{perm}</Text>
                                 </View>
@@ -75,7 +79,7 @@ export function ProfileDetails() {
                             <Text style={styles.actionTitle}>Mật khẩu</Text>
                             <Text style={styles.actionSubtitle}>Cập nhật lần cuối 3 tháng trước</Text>
                         </View>
-                        <TouchableOpacity style={styles.actionButton}>
+                        <TouchableOpacity style={styles.actionButton} onPress={onChangePasswordPress}>
                             <Text style={styles.actionButtonText}>Đổi mật khẩu</Text>
                         </TouchableOpacity>
                     </View>

@@ -1,10 +1,15 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ADMIN_ACTIVITY_MOCK, ADMIN_PROFILE_MOCK } from '../data/admin-profile.data';
+import { ADMIN_ACTIVITY_MOCK } from '../data/admin-profile.data';
 
-export function ProfileSidebar() {
-    const d = ADMIN_PROFILE_MOCK;
+interface ProfileSidebarProps {
+    profile: any;
+    onEditPress: () => void;
+}
+
+export function ProfileSidebar({ profile, onEditPress }: ProfileSidebarProps) {
+    const d = profile;
     const activities = ADMIN_ACTIVITY_MOCK;
 
     return (
@@ -44,7 +49,7 @@ export function ProfileSidebar() {
                         </View>
                     </View>
 
-                    <TouchableOpacity style={styles.editButton} activeOpacity={0.8}>
+                    <TouchableOpacity style={styles.editButton} activeOpacity={0.8} onPress={onEditPress}>
                         <Text style={styles.editButtonText}>Chỉnh sửa hồ sơ</Text>
                     </TouchableOpacity>
                 </View>
