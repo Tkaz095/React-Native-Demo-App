@@ -1,5 +1,5 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     KeyboardAvoidingView,
     Modal,
@@ -9,11 +9,13 @@ import {
     View,
 } from "react-native";
 import LoginForm from "./LoginForm";
+import SignupForm from "./SignupForm";
 
 export interface AuthModalProps {
   visible: boolean;
   onClose: () => void;
   onAuthSuccess: (user: any, token: string) => void;
+  initialMode?: "login" | "signup";
 }
 
 type AuthMode = "login" | "signup";
@@ -22,8 +24,16 @@ const AuthModal: React.FC<AuthModalProps> = ({
   visible,
   onClose,
   onAuthSuccess,
+  initialMode = "login",
 }) => {
-  const [mode, setMode] = useState<AuthMode>("login");
+  const [mode, setMode] = useState<AuthMode>(initialMode);
+
+  // Sync mode with initialMode when modal opens
+  useEffect(() => {
+    if (visible) {
+      setMode(initialMode);
+    }
+  }, [visible, initialMode]);
 
   const handleAuthSuccess = (user: any, token: string) => {
     onAuthSuccess(user, token);
@@ -57,6 +67,12 @@ const AuthModal: React.FC<AuthModalProps> = ({
               <LoginForm
                 onLoginSuccess={handleAuthSuccess}
                 onSwitchToSignup={() => setMode("signup")}
+              />
+            )}
+            {mode === "signup" && (
+              <SignupForm
+                onSignupSuccess={handleAuthSuccess}
+                onSwitchToLogin={() => setMode("login")}
               />
             )}
           </View>

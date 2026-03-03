@@ -1,27 +1,62 @@
-import Button from "@/components/ui/Button";
+import DrawerMenu from "@/components/DrawerMenu";
 import AuthModal from "@/features/auth/components/AuthModal";
 import type { User } from "@/features/auth/data/mockUsers";
+import { useResponsive } from "@/utils/responsive";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+const HERO_IMAGES = [
+  require("@/assets/images/DN.jpg"),
+  require("@/assets/images/DN02.jpg"),
+];
 
 const LandingPage: React.FC = () => {
+  const { width, height, isDesktop, scale, moderateScale } = useResponsive();
   const router = useRouter();
-  const insets = useSafeAreaInsets();
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [authenticatedUser, setAuthenticatedUser] = useState<User | null>(null);
 
-  const handleAuthSuccess = (user: User, token: string) => {
-    setAuthenticatedUser(user);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+  const [showDrawerMenu, setShowDrawerMenu] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Auto-scroll images
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+    }, 4000);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
+
+  const openAuthModal = (mode: "login" | "signup") => {
+    setAuthMode(mode);
+    setShowAuthModal(true);
+  };
+
+  const handleAuthSuccess = (user: User, _token: string) => {
     setShowAuthModal(false);
 
     // Navigate to dashboard based on role
     if (user.role === "admin") {
-      router.replace("/(tabs)/");
+      router.replace("/(tabs)" as const);
       Alert.alert("Thành công", `Chào mừng ${user.name}!`);
     } else {
-      router.replace("/(tabs)/");
+      router.replace("/(tabs)" as const);
       Alert.alert("Thành công", `Chào mừng ${user.name}!`);
     }
   };
@@ -30,319 +65,310 @@ const LandingPage: React.FC = () => {
     Alert.alert(
       "Thông tin thêm",
       "Hỏi Doanh Nghiệp là nền tảng kết nối cộng đồng doanh nhân, giúp bạn:\n\n" +
-        "• Kết nối với các doanh nghiệp khác\n" +
-        "• Chia sẻ kinh nghiệm kinh doanh\n" +
-        "• Tìm kiếm cơ hội hợp tác\n" +
-        "• Cập nhật tin tức ngành",
+      "• Kết nối với các doanh nghiệp khác\n" +
+      "• Chia sẻ kinh nghiệm kinh doanh\n" +
+      "• Tìm kiếm cơ hội hợp tác\n" +
+      "• Cập nhật tin tức ngành",
     );
   };
 
+  // Generate responsive styles dynamically
+  const styles = useMemo(() => getStyles(isDesktop, scale, moderateScale), [isDesktop, scale, moderateScale]);
+
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
+    <View style={styles.container}>
+      {/* Absolute Hero Images */}
+      {HERO_IMAGES.map((img, index) => (
+        <Image
+          key={index}
+          source={img}
+          style={[
+            StyleSheet.absoluteFillObject,
+            {
+              opacity: currentImageIndex === index ? 1 : 0,
+              width: "100%",
+              height: "100%",
+            }
+          ]}
+          resizeMode="cover"
+        />
+      ))}
+
+      {/* Premium Overlay Gradient */}
+      <View style={styles.overlay} />
+
+      {/* Main Content Area using SafeAreaView correctly */}
+      <SafeAreaView
+        style={[
+          styles.mainContent,
+          { width, minHeight: height }
+        ]}
       >
-        {/* Hero Banner */}
-        <View style={styles.banner}>
-          {/* Header */}
-          <View style={styles.header}>
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.headerLeft}>
             <View style={styles.logo}>
               <Text style={styles.logoText}>H</Text>
             </View>
             <View style={styles.headerText}>
-              <Text style={styles.headerTitle}>Hỏi Doanh Nghiệp</Text>
-              <Text style={styles.headerSubtitle}>KẾT NỐI NGƯỜI TÀM</Text>
+              <Text style={styles.headerTitle}>Hội Doanh Nghiệp</Text>
+              <Text style={styles.headerSubtitle}>KẾT NỐI VƯƠN TẦM</Text>
             </View>
           </View>
+          <TouchableOpacity
+            style={styles.menuButton}
+            onPress={() => setShowDrawerMenu(true)}
+          >
+            <MaterialIcons name="menu" size={scale(28)} color="#FFF" />
+          </TouchableOpacity>
+        </View>
 
-          {/* Hero Content */}
-          <View style={styles.heroContent}>
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>
-                CHÀO MỪNG ĐẾN VỚI HỎI DOANH NGHIỆP
-              </Text>
-            </View>
-            <Text style={styles.title}>Tiến Phong Trong Chuyên Đổi Số</Text>
-            <Text style={styles.description}>
-              Hỗ trợ doanh nghiệp ứng dụng công nghệ 4.0 vào quản trị và vận
-              hành, tối ưu hóa nguồn lực.
+        {/* Hero Content */}
+        <View style={[styles.heroContent, isDesktop && styles.heroContentDesktop]}>
+          <View style={[styles.badge, isDesktop && styles.badgeDesktop]}>
+            <Text style={styles.badgeText}>
+              CHÀO MỪNG ĐẾN VỚI HỘI DOANH NGHIỆP
             </Text>
+          </View>
+          <Text style={[styles.title, isDesktop && styles.titleDesktop]}>
+            Kết Nối Doanh{isDesktop ? " " : "\n"}Nghiệp - Kiến Tạo{isDesktop ? " " : "\n"}Tương Lai
+          </Text>
+          <Text style={[styles.description, isDesktop && styles.descriptionDesktop]}>
+            Mạng lưới kinh doanh lớn mạnh nhất khu vực, giúp doanh nghiệp của
+            bạn phát triển bền vững và bứt phá thành công.
+          </Text>
 
-            {/* CTA Buttons */}
-            <View style={styles.buttonGroup}>
-              <Button
-                title="Đăng ký hội viên ngay"
-                onPress={() => setShowAuthModal(true)}
-                style={styles.primaryButton}
+          {/* CTA Buttons */}
+          <View style={[styles.buttonGroup, isDesktop && styles.buttonGroupDesktop]}>
+            <TouchableOpacity
+              style={[styles.primaryButton, isDesktop && styles.desktopButtonAction]}
+              onPress={() => openAuthModal("signup")}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.primaryButtonText}>
+                Đăng ký hội viên ngay
+              </Text>
+              <MaterialIcons name="chevron-right" size={moderateScale(20)} color="#FFF" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.secondaryButton, isDesktop && styles.desktopButtonAction]}
+              onPress={handleLearnMore}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.secondaryButtonText}>Tìm hiểu thêm</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Pagination Dots */}
+          <View style={styles.paginationDots}>
+            {HERO_IMAGES.map((_, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => setCurrentImageIndex(index)}
+                style={[
+                  styles.dot,
+                  index === currentImageIndex ? styles.dotActive : styles.dotInactive,
+                ]}
               />
-              <Button
-                title="Tìm hiểu thêm"
-                variant="secondary"
-                onPress={handleLearnMore}
-                style={styles.secondaryButton}
-              />
-            </View>
+            ))}
           </View>
         </View>
-
-        {/* Features Section */}
-        <View style={styles.featuresContainer}>
-          <Text style={styles.sectionTitle}>Tính năng chính</Text>
-
-          <View style={styles.featureCard}>
-            <View style={styles.featureIcon}>
-              <Text style={styles.iconText}>👥</Text>
-            </View>
-            <View style={styles.featureContent}>
-              <Text style={styles.featureTitle}>Kết nối cộng đồng</Text>
-              <Text style={styles.featureDescription}>
-                Tìm kiếm và kết nối với các doanh nhân khác
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.featureCard}>
-            <View style={styles.featureIcon}>
-              <Text style={styles.iconText}>📱</Text>
-            </View>
-            <View style={styles.featureContent}>
-              <Text style={styles.featureTitle}>Công nghệ hiện đại</Text>
-              <Text style={styles.featureDescription}>
-                Nền tảng được xây dựng với công nghệ mới nhất
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.featureCard}>
-            <View style={styles.featureIcon}>
-              <Text style={styles.iconText}>🔒</Text>
-            </View>
-            <View style={styles.featureContent}>
-              <Text style={styles.featureTitle}>Bảo mật cao</Text>
-              <Text style={styles.featureDescription}>
-                Thông tin cá nhân của bạn được bảo vệ tối đa
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        {/* User Info Section */}
-        {authenticatedUser && (
-          <View style={styles.userInfoContainer}>
-            <Text style={styles.userInfoTitle}>Đã đăng nhập</Text>
-            <View style={styles.userCard}>
-              <View style={styles.userAvatar}>
-                <Text style={styles.avatarText}>
-                  {authenticatedUser.name.charAt(0).toUpperCase()}
-                </Text>
-              </View>
-              <View style={styles.userDetails}>
-                <Text style={styles.userName}>{authenticatedUser.name}</Text>
-                <Text style={styles.userRole}>
-                  {authenticatedUser.role === "admin"
-                    ? "Quản trị viên"
-                    : "Thành viên"}
-                </Text>
-                <Text style={styles.userEmail}>{authenticatedUser.email}</Text>
-              </View>
-            </View>
-          </View>
-        )}
-      </ScrollView>
+      </SafeAreaView>
 
       {/* Auth Modal */}
       <AuthModal
         visible={showAuthModal}
         onClose={() => setShowAuthModal(false)}
         onAuthSuccess={handleAuthSuccess}
+        initialMode={authMode}
+      />
+
+      {/* Drawer Menu */}
+      <DrawerMenu
+        visible={showDrawerMenu}
+        onClose={() => setShowDrawerMenu(false)}
+        onLogin={() => openAuthModal("login")}
+        onRegister={() => openAuthModal("signup")}
       />
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#FFF",
-  },
-  scrollView: {
-    flex: 1,
-  },
-  banner: {
-    height: 500,
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 20,
-    backgroundColor: "#1B5E9F",
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  logo: {
-    width: 40,
-    height: 40,
-    borderRadius: 8,
-    backgroundColor: "#1976D2",
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 12,
-  },
-  logoText: {
-    color: "#FFF",
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  headerText: {
-    flex: 1,
-  },
-  headerTitle: {
-    color: "#FFF",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  headerSubtitle: {
-    color: "rgba(255, 255, 255, 0.8)",
-    fontSize: 11,
-    fontWeight: "500",
-  },
-  heroContent: {
-    flex: 1,
-    justifyContent: "flex-end",
-  },
-  badge: {
-    backgroundColor: "rgba(25, 118, 210, 0.9)",
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 4,
-    alignSelf: "flex-start",
-    marginBottom: 16,
-  },
-  badgeText: {
-    color: "#FFF",
-    fontSize: 10,
-    fontWeight: "600",
-    letterSpacing: 0.5,
-  },
-  title: {
-    color: "#FFF",
-    fontSize: 36,
-    fontWeight: "bold",
-    marginBottom: 12,
-    lineHeight: 44,
-  },
-  description: {
-    color: "rgba(255, 255, 255, 0.9)",
-    fontSize: 14,
-    lineHeight: 20,
-    marginBottom: 24,
-  },
-  buttonGroup: {
-    gap: 12,
-  },
-  primaryButton: {
-    width: "100%",
-  },
-  secondaryButton: {
-    width: "100%",
-  },
-  featuresContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 32,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 16,
-  },
-  featureCard: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    marginBottom: 16,
-    padding: 16,
-    backgroundColor: "#F8F8F8",
-    borderRadius: 12,
-  },
-  featureIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
-    backgroundColor: "#FFF",
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 12,
-  },
-  iconText: {
-    fontSize: 24,
-  },
-  featureContent: {
-    flex: 1,
-  },
-  featureTitle: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: "#333",
-    marginBottom: 4,
-  },
-  featureDescription: {
-    fontSize: 13,
-    color: "#666",
-    lineHeight: 18,
-  },
-  userInfoContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 24,
-    borderTopWidth: 1,
-    borderTopColor: "#F0F0F0",
-  },
-  userInfoTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#333",
-    marginBottom: 12,
-  },
-  userCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F8F8F8",
-    borderRadius: 12,
-    padding: 16,
-  },
-  userAvatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: "#1976D2",
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 16,
-  },
-  avatarText: {
-    color: "#FFF",
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  userDetails: {
-    flex: 1,
-  },
-  userName: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: "#333",
-    marginBottom: 2,
-  },
-  userRole: {
-    fontSize: 12,
-    color: "#1976D2",
-    fontWeight: "500",
-    marginBottom: 4,
-  },
-  userEmail: {
-    fontSize: 12,
-    color: "#999",
-  },
-});
+const getStyles = (isDesktop: boolean, scale: (s: number) => number, moderateScale: (s: number) => number) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: "#0d1b2a",
+    },
+    overlay: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: "rgba(10, 25, 60, 0.65)", // Premium dark blue tint
+    },
+    mainContent: {
+      flex: 1,
+      justifyContent: "space-between",
+      paddingHorizontal: isDesktop ? "10%" : scale(24),
+      paddingBottom: scale(20), // Padding off the bottom of SafeAreaView
+      paddingTop: scale(16),
+    },
+    header: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      zIndex: 1,
+    },
+    headerLeft: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    logo: {
+      width: scale(36),
+      height: scale(36),
+      borderRadius: scale(8),
+      backgroundColor: "#1976D2",
+      alignItems: "center",
+      justifyContent: "center",
+      marginRight: scale(10),
+    },
+    logoText: {
+      color: "#FFF",
+      fontSize: moderateScale(18),
+      fontWeight: "bold",
+    },
+    headerText: {
+      flex: 1,
+    },
+    headerTitle: {
+      color: "#FFF",
+      fontSize: moderateScale(15),
+      fontWeight: "700",
+    },
+    headerSubtitle: {
+      color: "rgba(255, 255, 255, 0.75)",
+      fontSize: moderateScale(9),
+      fontWeight: "600",
+      letterSpacing: 1,
+    },
+    menuButton: {
+      padding: scale(12),
+    },
+    heroContent: {
+      flex: 1,
+      justifyContent: "flex-end",
+      zIndex: 1,
+    },
+    badge: {
+      backgroundColor: "rgba(25, 118, 210, 0.95)",
+      paddingHorizontal: scale(12),
+      paddingVertical: scale(8),
+      borderRadius: scale(4),
+      alignSelf: "flex-start",
+      marginBottom: scale(20),
+    },
+    badgeText: {
+      color: "#FFF",
+      fontSize: moderateScale(9),
+      fontWeight: "700",
+      letterSpacing: 0.8,
+    },
+    title: {
+      color: "#FFF",
+      fontSize: moderateScale(32),
+      fontWeight: "bold",
+      marginBottom: scale(16),
+      lineHeight: moderateScale(40),
+    },
+    description: {
+      color: "rgba(255, 255, 255, 0.9)",
+      fontSize: moderateScale(14),
+      lineHeight: moderateScale(22),
+      marginBottom: scale(28),
+    },
+    buttonGroup: {
+      gap: scale(12),
+      marginBottom: scale(24),
+    },
+    primaryButton: {
+      width: "100%",
+      backgroundColor: "#1976D2",
+      paddingVertical: scale(16),
+      paddingHorizontal: scale(24),
+      borderRadius: scale(8),
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    primaryButtonText: {
+      color: "#FFF",
+      fontSize: moderateScale(15),
+      fontWeight: "600",
+      marginRight: scale(4),
+    },
+    secondaryButton: {
+      width: "100%",
+      backgroundColor: "#FFF",
+      paddingVertical: scale(16),
+      paddingHorizontal: scale(24),
+      borderRadius: scale(8),
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    secondaryButtonText: {
+      color: "#333",
+      fontSize: moderateScale(15),
+      fontWeight: "600",
+    },
+    paginationDots: {
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
+      gap: scale(8),
+      marginBottom: scale(8),
+    },
+    dot: {
+      borderRadius: scale(4),
+    },
+    dotInactive: {
+      width: scale(8),
+      height: scale(8),
+      backgroundColor: "rgba(255, 255, 255, 0.4)",
+    },
+    dotActive: {
+      width: scale(24),
+      height: scale(8),
+      backgroundColor: "#1976D2",
+    },
+    heroContentDesktop: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: "10%",
+    },
+    titleDesktop: {
+      fontSize: moderateScale(56),
+      textAlign: 'center',
+      lineHeight: moderateScale(70),
+      marginBottom: scale(24),
+    },
+    descriptionDesktop: {
+      fontSize: moderateScale(18),
+      textAlign: 'center',
+      maxWidth: 800,
+      lineHeight: moderateScale(28),
+      marginBottom: scale(40),
+    },
+    buttonGroupDesktop: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      gap: scale(20),
+      marginBottom: scale(40),
+    },
+    desktopButtonAction: {
+      width: "auto",
+      minWidth: 220,
+    },
+    badgeDesktop: {
+      alignSelf: 'center',
+    },
+  });
 
 export default LandingPage;
