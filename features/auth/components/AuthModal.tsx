@@ -1,12 +1,12 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import {
-    KeyboardAvoidingView,
-    Modal,
-    Platform,
-    StyleSheet,
-    TouchableOpacity,
-    View,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
@@ -53,7 +53,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
       >
-        <View style={styles.overlay}>
+        <View style={styles.overlayCentered}>
           {/* Header */}
           <View style={styles.header}>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
@@ -86,14 +86,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 16,
   },
-  overlay: {
-    flex: 1,
+  overlayCentered: {
     backgroundColor: "#FFF",
-    marginTop: 40,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    borderRadius: 16,
+    width: "100%",
+    maxWidth: 500, // Max width for tablet/web
+    maxHeight: "90%",
     overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.25,
+    shadowRadius: 20,
+    elevation: 10,
   },
   header: {
     paddingHorizontal: 16,
@@ -107,7 +115,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   content: {
-    flex: 1,
+    paddingBottom: 16, // added padding bottom to let scrollview breathe
   },
 });
 

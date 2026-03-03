@@ -1,13 +1,13 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
-    Alert,
-    Linking,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  Linking,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
@@ -78,7 +78,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
       } else {
         setErrors({ form: response.message });
       }
-    } catch (error) {
+    } catch {
       setErrors({ form: "Có lỗi xảy ra. Vui lòng thử lại." });
     } finally {
       setLoading(false);
@@ -243,17 +243,19 @@ const LoginForm: React.FC<LoginFormProps> = ({
         style={styles.loginButton}
       />
 
-      {/* Demo Account */}
       <View style={styles.demoContainer}>
-        <Text style={styles.demoLabel}>Demo Tài Khoản</Text>
-        <Text style={styles.demoInfo}>
-          Admin: {DEMO_ACCOUNT.email} / {DEMO_ACCOUNT.password}
-        </Text>
-        <Text style={styles.demoInfo}>
-          Hội viên: member@example.com / member123
-        </Text>
-        <TouchableOpacity onPress={handleFillDemoAccount}>
-          <Text style={styles.fillDemoButton}>Điền thông tin demo</Text>
+        <View style={styles.demoContent}>
+          <Text style={styles.demoLabel}>Demo Tài Khoản</Text>
+          <Text style={styles.demoInfo}>
+            Admin: {DEMO_ACCOUNT.email} / {DEMO_ACCOUNT.password}
+          </Text>
+          <Text style={styles.demoInfo}>
+            Hội viên: member@example.com / member123
+          </Text>
+        </View>
+        <TouchableOpacity style={styles.fillDemoButton} onPress={handleFillDemoAccount} activeOpacity={0.8}>
+          <MaterialIcons name="auto-fix-high" size={16} color="#FFF" />
+          <Text style={styles.fillDemoButtonText}>Điền nhanh</Text>
         </TouchableOpacity>
       </View>
 
@@ -359,27 +361,45 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     marginBottom: 20,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  demoContent: {
+    flex: 1,
   },
   demoLabel: {
     fontSize: 12,
-    fontWeight: "600",
+    fontWeight: "700",
     color: "#1976D2",
     marginBottom: 6,
   },
   demoInfo: {
-    fontSize: 12,
-    color: "#666",
-    marginBottom: 4,
+    fontSize: 11,
+    color: "#555",
+    marginBottom: 2,
   },
   demoPassword: {
-    fontWeight: "600",
-    color: "#333",
+    fontWeight: "700",
+    color: "#222",
   },
   fillDemoButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#1976D2",
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 6,
+    gap: 4,
+    shadowColor: "#1976D2",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  fillDemoButtonText: {
     fontSize: 12,
-    color: "#1976D2",
+    color: "#FFF",
     fontWeight: "600",
-    marginTop: 8,
   },
   dividerContainer: {
     flexDirection: "row",

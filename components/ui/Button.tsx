@@ -1,11 +1,12 @@
 import React from "react";
 import {
-    ActivityIndicator,
-    StyleSheet,
-    Text,
-    TextStyle,
-    TouchableOpacity,
-    ViewStyle,
+  ActivityIndicator,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  ViewStyle,
 } from "react-native";
 
 export interface ButtonProps {
@@ -16,8 +17,8 @@ export interface ButtonProps {
   disabled?: boolean;
   loading?: boolean;
   testID?: string;
-  style?: ViewStyle;
-  textStyle?: TextStyle;
+  style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
 }
 
 const Button: React.FC<ButtonProps> = ({
