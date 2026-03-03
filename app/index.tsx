@@ -18,10 +18,10 @@ const LandingPage: React.FC = () => {
 
     // Navigate to dashboard based on role
     if (user.role === "admin") {
-      router.replace("/(tabs)/");
+      router.replace("/admin" as any);
       Alert.alert("Thành công", `Chào mừng ${user.name}!`);
     } else {
-      router.replace("/(tabs)/");
+      router.replace("/(tabs)" as any);
       Alert.alert("Thành công", `Chào mừng ${user.name}!`);
     }
   };
@@ -30,10 +30,10 @@ const LandingPage: React.FC = () => {
     Alert.alert(
       "Thông tin thêm",
       "Hỏi Doanh Nghiệp là nền tảng kết nối cộng đồng doanh nhân, giúp bạn:\n\n" +
-        "• Kết nối với các doanh nghiệp khác\n" +
-        "• Chia sẻ kinh nghiệm kinh doanh\n" +
-        "• Tìm kiếm cơ hội hợp tác\n" +
-        "• Cập nhật tin tức ngành",
+      "• Kết nối với các doanh nghiệp khác\n" +
+      "• Chia sẻ kinh nghiệm kinh doanh\n" +
+      "• Tìm kiếm cơ hội hợp tác\n" +
+      "• Cập nhật tin tức ngành",
     );
   };
 

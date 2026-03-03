@@ -1,20 +1,20 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
-    StyleSheet,
-    Text,
-    TextInput,
-    TextInputProps,
-    TouchableOpacity,
-    View,
-    ViewStyle,
+  StyleSheet,
+  Text,
+  TextInput,
+  TextInputProps,
+  TouchableOpacity,
+  View,
+  ViewStyle,
 } from "react-native";
 
 export interface InputProps extends TextInputProps {
   label?: string;
   error?: string;
-  icon?: string;
-  rightIcon?: string;
+  icon?: React.ComponentProps<typeof MaterialIcons>["name"];
+  rightIcon?: React.ComponentProps<typeof MaterialIcons>["name"];
   onRightIconPress?: () => void;
   containerStyle?: ViewStyle;
   isPassword?: boolean;
