@@ -2,14 +2,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { usePathname, useRouter } from "expo-router";
 import React from "react";
 import {
-    Modal,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    View,
+  Modal,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
 
 interface AdminSidebarProps {
@@ -30,16 +30,16 @@ const MAIN_NAV: NavItem[] = [
     icon: "analytics-outline",
   },
   { title: "Quản lý hội viên", path: "/admin/members", icon: "people-outline" },
-  {
-    title: "Quản lý dịch vụ",
-    path: "/admin/service-packages",
-    icon: "cube-outline",
-  },
-  {
-    title: "Quản lý giao dịch",
-    path: "/admin/transactions",
-    icon: "card-outline",
-  },
+  // {
+  //   title: "Quản lý dịch vụ",
+  //   path: "/admin/service-packages",
+  //   icon: "cube-outline",
+  // },
+  // {
+  //   title: "Quản lý giao dịch",
+  //   path: "/admin/transactions",
+  //   icon: "card-outline",
+  // },
   {
     title: "Quản lý bài đăng",
     path: "/admin/posts",
@@ -49,12 +49,12 @@ const MAIN_NAV: NavItem[] = [
 ];
 
 const BOTTOM_NAV: NavItem[] = [
-  {
-    title: "Thông tin cá nhân",
-    path: "/admin/profile",
-    icon: "person-outline",
-  },
-  { title: "Cài đặt", path: "/admin/settings", icon: "settings-outline" },
+  // {
+  //   title: "Thông tin cá nhân",
+  //   path: "/admin/profile",
+  //   icon: "person-outline",
+  // },
+  // { title: "Cài đặt", path: "/admin/settings", icon: "settings-outline" },
 ];
 
 export function AdminSidebar({
@@ -84,7 +84,7 @@ export function AdminSidebar({
         <Ionicons
           name={item.icon}
           size={22}
-          color={isActive ? "#EAB308" : "#9CA3AF"}
+          color={isActive ? "#FFFFFF" : "#9CA3AF"}
         />
         <Text style={[styles.navText, isActive && styles.activeNavText]}>
           {item.title}
@@ -106,48 +106,52 @@ export function AdminSidebar({
         </TouchableWithoutFeedback>
 
         <View style={styles.bottomSheet}>
-          {/* Header area of bottom sheet */}
-          <View style={styles.sheetHeader}>
-            <View style={styles.brandContainer}>
-              <View style={styles.brandLogo}>
-                <Text style={styles.brandLogoText}>H</Text>
+          <View style={{ flexShrink: 1 }}>
+            {/* Header area of bottom sheet */}
+            <View style={[styles.sheetHeader, { flexShrink: 0 }]}>
+              <View style={styles.brandContainer}>
+                <View style={styles.brandLogo}>
+                  <Text style={styles.brandLogoText}>H</Text>
+                </View>
+                <View>
+                  <Text style={styles.brandName}>Hội Doanh Nghiệp</Text>
+                  <Text style={styles.brandSub}>ADMIN PORTAL</Text>
+                </View>
               </View>
-              <View>
-                <Text style={styles.brandName}>Hội Doanh Nghiệp</Text>
-                <Text style={styles.brandSub}>ADMIN PORTAL</Text>
-              </View>
-            </View>
-            <TouchableOpacity
-              onPress={() => setSidebarOpen(false)}
-              style={styles.closeButton}
-            >
-              <Ionicons name="close" size={24} color="#6B7280" />
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView
-            style={styles.scrollContent}
-            showsVerticalScrollIndicator={false}
-          >
-            <View style={styles.navSection}>{MAIN_NAV.map(renderNavItem)}</View>
-
-            <View style={styles.divider} />
-
-            <View style={styles.navSection}>
-              {BOTTOM_NAV.map(renderNavItem)}
-
               <TouchableOpacity
-                style={styles.navItem}
-                onPress={() => {
-                  setSidebarOpen(false);
-                  setTimeout(() => router.replace("/" as any), 150);
-                }}
+                onPress={() => setSidebarOpen(false)}
+                style={styles.closeButton}
               >
-                <Ionicons name="log-out-outline" size={22} color="#9CA3AF" />
-                <Text style={styles.navText}>Đăng xuất</Text>
+                <Ionicons name="close" size={24} color="#6B7280" />
               </TouchableOpacity>
             </View>
-          </ScrollView>
+
+            <ScrollView
+              style={styles.scrollContent}
+              showsVerticalScrollIndicator={false}
+            >
+              <View style={styles.navSection}>{MAIN_NAV.map(renderNavItem)}</View>
+
+              <View style={styles.divider} />
+
+              <View style={styles.navSection}>
+                {BOTTOM_NAV.map(renderNavItem)}
+              </View>
+            </ScrollView>
+          </View>
+
+          <View style={styles.logoutWrapper}>
+            <TouchableOpacity
+              style={styles.navItem}
+              onPress={() => {
+                setSidebarOpen(false);
+                setTimeout(() => router.replace("/" as any), 150);
+              }}
+            >
+              <Ionicons name="log-out-outline" size={22} color="#EF4444" />
+              <Text style={[styles.navText, { color: "#EF4444" }]}>Đăng xuất</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Modal>
@@ -168,9 +172,15 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingTop: 16,
-    paddingBottom: Platform.OS === "ios" ? 40 : 20,
+    paddingBottom: Platform.OS === "ios" ? 40 : 40, // Increased Android padding to compensate
+    marginBottom: Platform.OS === "android" ? -24 : 0, // Negative margin to cover Android bottom gap
     maxHeight: "85%", // Don't take up entire screen
     minHeight: "60%",
+    justifyContent: "space-between",
+  },
+  logoutWrapper: {
+    paddingHorizontal: 12,
+    paddingTop: 8,
   },
   sheetHeader: {
     flexDirection: "row",
