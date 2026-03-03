@@ -138,8 +138,11 @@ export default function MembersPage() {
                         </TouchableOpacity>
                     )}
                 </View>
-                <TouchableOpacity style={styles.filterButton} onPress={() => setFilterVisible(true)}>
-                    <Ionicons name="options-outline" size={22} color="#4B5563" />
+                <TouchableOpacity
+                    style={[styles.filterButton, activeFilterCount > 0 && styles.filterButtonActive]}
+                    onPress={() => setFilterVisible(true)}
+                >
+                    <Ionicons name="filter" size={20} color={activeFilterCount > 0 ? "#1976D2" : "#4B5563"} />
                     {activeFilterCount > 0 && (
                         <View style={styles.filterBadge}>
                             <Text style={styles.filterBadgeText}>{activeFilterCount}</Text>
@@ -327,6 +330,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         position: 'relative',
+    },
+    filterButtonActive: {
+        backgroundColor: '#EFF6FF',
+        borderColor: '#BFDBFE',
     },
     filterBadge: {
         position: 'absolute',
