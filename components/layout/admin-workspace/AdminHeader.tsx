@@ -1,29 +1,41 @@
 import { Ionicons } from '@expo/vector-icons';
-import { usePathname } from 'expo-router';
-import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { usePathname, useRouter } from 'expo-router';
+import { Alert, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ADMIN_PAGE_TITLES } from './admin-page-titles';
 
-interface AdminHeaderProps {
-    setSidebarOpen: (open: boolean) => void;
-}
-
-export function AdminHeader({ setSidebarOpen }: AdminHeaderProps) {
+export function AdminHeader() {
     const pathname = usePathname();
+    const router = useRouter();
     const pageInfo = ADMIN_PAGE_TITLES[pathname] || { title: 'Admin' };
+
+    const handleLogout = () => {
+        Alert.alert("Đăng xuất", "Bạn có chắc chắn muốn đăng xuất phiên làm việc?", [
+            { text: "Đóng", style: "cancel" },
+            {
+                text: "Đăng xuất",
+                style: "destructive",
+                onPress: () => router.replace("/" as any)
+            }
+        ]);
+    };
 
     return (
         <View style={styles.header}>
-            <TouchableOpacity
-                style={styles.menuButton}
-                onPress={() => setSidebarOpen(true)}
-            >
-                <Ionicons name="menu" size={28} color="#333" />
-            </TouchableOpacity>
+            <View style={styles.leftSection}>
+                <View style={styles.brandLogo}>
+                    <Text style={styles.brandLogoText}>H</Text>
+                </View>
+            </View>
 
-            <Text style={styles.title}>{pageInfo.title}</Text>
+            <View style={styles.centerSection}>
+                <Text style={styles.title}>{pageInfo.title}</Text>
+            </View>
 
-            {/* Empty view for flex balancing */}
-            <View style={{ width: 40 }} />
+            <View style={styles.rightSection}>
+                <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+                    <Ionicons name="log-out-outline" size={24} color="#EF4444" />
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }
@@ -32,7 +44,6 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
         paddingHorizontal: 16,
         paddingTop: Platform.OS === 'ios' ? 50 : 20, // SafeArea approximation
         paddingBottom: 16,
@@ -46,13 +57,37 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
         zIndex: 10,
     },
-    menuButton: {
-        padding: 8,
-        marginLeft: -8,
+    leftSection: {
+        flex: 1,
+        alignItems: 'flex-start',
+    },
+    centerSection: {
+        flex: 2,
+        alignItems: 'center',
+    },
+    rightSection: {
+        flex: 1,
+        alignItems: 'flex-end',
+    },
+    brandLogo: {
+        width: 32,
+        height: 32,
+        borderRadius: 8,
+        backgroundColor: "#EAB308",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    brandLogoText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "bold",
     },
     title: {
         fontSize: 18,
         fontWeight: '600',
         color: '#333',
+    },
+    logoutButton: {
+        padding: 4,
     }
 });
