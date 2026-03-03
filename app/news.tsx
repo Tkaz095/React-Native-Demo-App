@@ -1,5 +1,6 @@
 import DrawerMenu from "@/components/DrawerMenu";
 import { LandingHeader } from "@/components/LandingHeader";
+import { useLandingAuth } from "@/hooks/useLandingAuth";
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
@@ -47,6 +48,7 @@ const NEWS_ITEMS = [
 
 export default function NewsPage() {
    const [showDrawer, setShowDrawer] = useState(false);
+   const { openLogin, openRegister, AuthModalComponent } = useLandingAuth();
 
    return (
       <View style={styles.container}>
@@ -121,9 +123,10 @@ export default function NewsPage() {
          <DrawerMenu
             visible={showDrawer}
             onClose={() => setShowDrawer(false)}
-            onLogin={() => setShowDrawer(false)}
-            onRegister={() => setShowDrawer(false)}
+            onLogin={() => { setShowDrawer(false); setTimeout(openLogin, 200); }}
+            onRegister={() => { setShowDrawer(false); setTimeout(openRegister, 200); }}
          />
+         {AuthModalComponent}
       </View>
    );
 }

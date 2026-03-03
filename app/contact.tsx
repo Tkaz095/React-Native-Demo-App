@@ -1,5 +1,6 @@
 import DrawerMenu from "@/components/DrawerMenu";
 import { LandingHeader } from "@/components/LandingHeader";
+import { useLandingAuth } from "@/hooks/useLandingAuth";
 import { Feather } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
@@ -40,6 +41,7 @@ const CONTACT_INFO = [
 
 export default function ContactPage() {
    const [showDrawer, setShowDrawer] = useState(false);
+   const { openLogin, openRegister, AuthModalComponent } = useLandingAuth();
    const [form, setForm] = useState({
       name: "",
       phone: "",
@@ -151,9 +153,10 @@ export default function ContactPage() {
          <DrawerMenu
             visible={showDrawer}
             onClose={() => setShowDrawer(false)}
-            onLogin={() => setShowDrawer(false)}
-            onRegister={() => setShowDrawer(false)}
+            onLogin={() => { setShowDrawer(false); setTimeout(openLogin, 200); }}
+            onRegister={() => { setShowDrawer(false); setTimeout(openRegister, 200); }}
          />
+         {AuthModalComponent}
       </View>
    );
 }
