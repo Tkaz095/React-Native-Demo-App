@@ -137,6 +137,7 @@ const styles = StyleSheet.create({
   headerLeft: {
     flexDirection: "row",
     alignItems: "center",
+    flex: 1,
   },
   logo: {
     width: 36,
