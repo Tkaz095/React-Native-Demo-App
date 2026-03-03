@@ -3,9 +3,9 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Svg, { Path, Polyline, Circle as SvgCircle } from "react-native-svg";
 import {
-    COST_VS_VALUE_MOCK,
-    MEMBER_SOURCE_QUALITY_MOCK,
-    OPERATIONAL_BALANCE_MOCK,
+  COST_VS_VALUE_MOCK,
+  MEMBER_SOURCE_QUALITY_MOCK,
+  OPERATIONAL_BALANCE_MOCK,
 } from "../services/strategic-dashboard.mock";
 
 // ─── Shared ─────────────────────────────────────────────────────────────────
@@ -445,6 +445,7 @@ const styles = StyleSheet.create({
     borderColor: "#A7F3D0",
     borderRadius: 8,
     padding: 10,
+    flexWrap: "wrap",
   },
   healthCheckBadge: {
     width: 18,

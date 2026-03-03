@@ -1,68 +1,45 @@
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import React, { useState } from "react";
 import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    View
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from "react-native";
+import { StrategicFilterModal } from "./StrategicFilterModal";
 
 const now = new Date();
 const formattedTime = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
-const formattedDate = `${now.getDate().toString().padStart(2, "0")}/${(now.getMonth() + 1).toString().padStart(2, "0")}/${now.getFullYear()}`;
 
-const FILTER_OPTIONS = ["7 ngày qua", "30 ngày qua", "90 ngày qua"];
-const TARGET_OPTIONS = [
-  "Tất cả đối tượng",
-  "Hội viên",
-  "Doanh nghiệp",
-  "Đối tác",
-];
-const GROUP_OPTIONS = [
-  "Tất cả nhóm",
-  "Hội viên Vàng",
-  "Hội viên Bạc",
-  "Hội viên Đồng",
-];
 
-function FilterChip({
-  label,
-  iconName,
-}: {
-  label: string;
-  iconName: React.ComponentProps<typeof Ionicons>["name"];
-}) {
-  return (
-    <View style={styles.chip}>
-      <Ionicons name={iconName} size={13} color="#6B7280" />
-      <Text style={styles.chipText}>{label}</Text>
-      <Ionicons name="chevron-down" size={12} color="#9CA3AF" />
-    </View>
-  );
-}
+
 
 export function StrategicHeader() {
+  const [isModalVisible, setModalVisible] = useState(false);
+
   return (
     <View style={styles.container}>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.filterRow}
-      >
-        <View style={styles.filterLabel}>
-          <Ionicons name="filter-outline" size={14} color="#6B7280" />
-          <Text style={styles.filterLabelText}>Bộ lọc:</Text>
-        </View>
-        <FilterChip label={FILTER_OPTIONS[0]} iconName="calendar-outline" />
-        <FilterChip label={TARGET_OPTIONS[0]} iconName="people-outline" />
-        <FilterChip label={GROUP_OPTIONS[0]} iconName="layers-outline" />
-      </ScrollView>
+      <StrategicFilterModal
+        visible={isModalVisible}
+        onClose={() => setModalVisible(false)}
+        onApply={() => setModalVisible(false)}
+      />
 
-      <View style={styles.timestampRow}>
-        <Ionicons name="time-outline" size={13} color="#1E3A5F" />
-        <Text style={styles.timestampText}>Cập nhật: </Text>
-        <Text style={styles.timestampBold}>{formattedTime}</Text>
-        <Text style={styles.timestampSub}> ({formattedDate})</Text>
+      <View style={styles.topControls}>
+        <TouchableOpacity
+          style={styles.newFilterBtn}
+          onPress={() => setModalVisible(true)}
+        >
+          <Ionicons name="options-outline" size={18} color="#111827" />
+          <Text style={styles.newFilterBtnText}>Bộ lọc kết quả</Text>
+        </TouchableOpacity>
+
+        <View style={styles.timestampRow}>
+          <Ionicons name="time-outline" size={13} color="#6B7280" />
+          <Text style={styles.timestampText}>
+            Cập nhật lúc: <Text style={styles.timestampBold}>{formattedTime}</Text>
+          </Text>
+        </View>
       </View>
     </View>
   );
@@ -72,61 +49,44 @@ const styles = StyleSheet.create({
   container: {
     gap: 8,
   },
-  filterRow: {
+  topControls: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-    paddingVertical: 2,
+    justifyContent: "space-between",
+    marginBottom: 4,
   },
-  filterLabel: {
+  newFilterBtn: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
-  },
-  filterLabelText: {
-    fontSize: 13,
-    color: "#6B7280",
-    fontWeight: "500",
-  },
-  chip: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 8,
+    gap: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 24,
     borderWidth: 1,
     borderColor: "#E5E7EB",
-    backgroundColor: "#FFFFFF",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
   },
-  chipText: {
-    fontSize: 13,
+  newFilterBtnText: {
+    fontSize: 14,
+    fontWeight: "600",
     color: "#111827",
-    fontWeight: "500",
   },
   timestampRow: {
     flexDirection: "row",
     alignItems: "center",
-    alignSelf: "flex-end",
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
-    backgroundColor: "#F9FAFB",
-    gap: 3,
+    gap: 4,
   },
   timestampText: {
     fontSize: 12,
     color: "#6B7280",
   },
   timestampBold: {
-    fontSize: 13,
-    fontWeight: "700",
-    color: "#111827",
-  },
-  timestampSub: {
-    fontSize: 12,
-    color: "#9CA3AF",
+    fontWeight: "600",
+    color: "#4B5563",
   },
 });
