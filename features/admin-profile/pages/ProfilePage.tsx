@@ -1,23 +1,55 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { ChangePasswordModal } from '../components/ChangePasswordModal';
+import { EditProfileModal } from '../components/EditProfileModal';
+import { ProfileDetails } from '../components/ProfileDetails';
+import { ProfileSidebar } from '../components/ProfileSidebar';
+import { ADMIN_PROFILE_MOCK } from '../data/admin-profile.data';
 
 export default function ProfilePage() {
+    const [profile, setProfile] = useState(ADMIN_PROFILE_MOCK);
+    const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+    const [isPasswordModalVisible, setIsPasswordModalVisible] = useState(false);
+
+    const handleSaveProfile = (updatedData: any) => {
+        setProfile(updatedData);
+        setIsEditModalVisible(false);
+    };
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Nội dung trang - Thông tin cá nhân</Text>
-        </View>
+        <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+            <View style={styles.layout}>
+                {/* Trên mobile sẽ hiển thị Sidebar trước, rồi Details dưới */}
+                <ProfileSidebar profile={profile} onEditPress={() => setIsEditModalVisible(true)} />
+                <ProfileDetails profile={profile} onChangePasswordPress={() => setIsPasswordModalVisible(true)} />
+            </View>
+
+            <EditProfileModal
+                visible={isEditModalVisible}
+                profile={profile}
+                onClose={() => setIsEditModalVisible(false)}
+                onSave={handleSaveProfile}
+            />
+
+            <ChangePasswordModal
+                visible={isPasswordModalVisible}
+                onClose={() => setIsPasswordModalVisible(false)}
+            />
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 16,
+        backgroundColor: '#F9FAFB',
     },
-    text: {
-        fontSize: 16,
-        color: '#6B7280',
+    content: {
+        padding: 16,
+        paddingBottom: 40,
+    },
+    layout: {
+        flexDirection: 'column',
+        gap: 16,
     }
 });

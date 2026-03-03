@@ -30,6 +30,10 @@ export default function MembersPage() {
     const regions = useMemo(() => ['all', ...Array.from(new Set(members.map(m => m.region)))], [members]);
     const tiers = useMemo(() => ['all', 'Đồng', 'Bạc', 'Vàng', 'Kim cương'], []);
 
+    const ITEMS_PER_PAGE = 10;
+    const [page, setPage] = useState(1);
+    const [loadingMore, setLoadingMore] = useState(false);
+
     const filteredMembers = useMemo(() => {
         return members.filter(member => {
             const matchesSearch =
@@ -46,6 +50,26 @@ export default function MembersPage() {
             return matchesSearch && matchesIndustry && matchesRegion && matchesTier && matchesStatus;
         });
     }, [searchQuery, filterIndustry, filterRegion, filterTier, filterStatus, members]);
+
+    // Khi lọc thay đổi, reset lại page
+    React.useEffect(() => {
+        setPage(1);
+    }, [filteredMembers.length]);
+
+    const currentMembers = useMemo(() => {
+        return filteredMembers.slice(0, page * ITEMS_PER_PAGE);
+    }, [filteredMembers, page]);
+
+    const hasMore = currentMembers.length < filteredMembers.length;
+
+    const handleLoadMore = () => {
+        if (!hasMore || loadingMore) return;
+        setLoadingMore(true);
+        setTimeout(() => {
+            setPage((prev) => prev + 1);
+            setLoadingMore(false);
+        }, 500);
+    };
 
     const activeFilterCount = (filterIndustry !== 'all' ? 1 : 0) +
         (filterRegion !== 'all' ? 1 : 0) +
@@ -153,14 +177,14 @@ export default function MembersPage() {
 
             {/* List */}
             <FlatList
-                data={filteredMembers}
+                data={currentMembers}
                 keyExtractor={(item) => item.id}
                 renderItem={renderMemberCard}
                 contentContainerStyle={styles.listContent}
                 showsVerticalScrollIndicator={false}
                 ListHeaderComponent={
                     <Text style={styles.resultCount}>
-                        Hiển thị {filteredMembers.length} hội viên
+                        Hiển thị {currentMembers.length} / {filteredMembers.length} hội viên
                     </Text>
                 }
                 ListEmptyComponent={
@@ -168,6 +192,16 @@ export default function MembersPage() {
                         <Ionicons name="search-outline" size={48} color="#D1D5DB" />
                         <Text style={styles.emptyText}>Không tìm thấy hội viên nào</Text>
                     </View>
+                }
+                onEndReached={handleLoadMore}
+                onEndReachedThreshold={0.5}
+                ListFooterComponent={
+                    loadingMore ? (
+                        <View style={{ paddingVertical: 16, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 8 }}>
+                            <Ionicons name="sync" size={20} color="#94A3B8" />
+                            <Text style={{ fontSize: 13, color: '#94A3B8', fontWeight: '500' }}>Đang tải thêm...</Text>
+                        </View>
+                    ) : <View style={{ height: 20 }} />
                 }
             />
 
