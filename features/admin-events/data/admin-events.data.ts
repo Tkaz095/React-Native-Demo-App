@@ -110,4 +110,17 @@ export const mockEvents: Event[] = [
         status: 'upcoming',
         registrations: 65,
     },
+    ...Array.from({ length: 30 }, (_, i) => ({
+        id: `${i + 7}`,
+        title: `[Event ${i + 7}] ${['Hội thảo CĐS', 'Gặp mặt đối tác', 'Triển lãm', 'Networking', 'Đầu tư'][i % 5]} ${2026 + (i % 2)}`,
+        typeId: `${(i % 3) + 1}`,
+        type: ['seminar', 'networking', 'exhibition'][i % 3] as "seminar" | "networking" | "exhibition",
+        datetime: `${(i % 28) + 1 < 10 ? '0' : ''}${(i % 28) + 1}/0${(i % 6) + 3}/2026 09:00`,
+        location: ['Hà Nội', 'TP.HCM', 'Đà Nẵng', 'Hải Phòng', 'Cần Thơ'][i % 5],
+        speaker: `Diễn giả ${['A', 'B', 'C', 'D', 'E'][i % 5]}`,
+        speakerTitle: `Chuyên gia ${['Tech', 'Business', 'Finance', 'Marketing', 'HR'][i % 5]}`,
+        status: (['upcoming', 'ongoing', 'completed', 'draft'][i % 4]) as 'upcoming' | 'ongoing' | 'completed' | 'draft',
+        registrations: (i * 15) % 150,
+        description: 'Mô tả tóm tắt sự kiện này...',
+    }))
 ];
