@@ -1,50 +1,83 @@
-# Welcome to your Expo app 👋
+📱 CORPORATE MOBILE APP (Standard 2026)
+Dự án Demo: Cổng thông tin & Kết nối Hội doanh nghiệp
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Dự án tập trung vào trải nghiệm người dùng bản địa (Native UX), tính bảo mật và khả năng mở rộng hệ thống theo tiêu chuẩn hiện đại nhất.
 
-## Get started
+🚀 Công nghệ chủ đạo (Tech Stack)
+Core Framework: Expo SDK 5x (Managed Workflow) giúp tối ưu hóa việc build app và cập nhật từ xa (OTA Updates).
 
-1. Install dependencies
+Navigation: Expo Router (File-based Routing). Hệ thống định tuyến hiện đại tương tự Next.js App Router.
 
-   ```bash
-   npm install
-   ```
+Ngôn ngữ: TypeScript (Strict Mode). Đảm bảo an toàn kiểu dữ liệu cho toàn bộ Logic nghiệp vụ.
 
-2. Start the app
+Giao diện (Styling): NativeWind (Tailwind CSS v4). Phát triển UI cực nhanh với tư duy Utility-first.
 
-   ```bash
-   npx expo start
-   ```
+Quản lý dữ liệu: TanStack Query (React Query) v5. Xử lý caching, loading và đồng bộ dữ liệu server mượt mà.
 
-In the output, you'll find options to open the app in a
+Xử lý Form: Zod + React Hook Form. Validate dữ liệu chặt chẽ ngay từ phía Client.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+📏 Quy chuẩn đặt tên (Naming Conventions)
+Việc tuân thủ quy chuẩn giúp tránh lỗi Case-Sensitive khi build trên các môi trường Android/iOS khác nhau.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+Thư mục tính năng (Features): Sử dụng kebab-case (Ví dụ: features/business-listing/).
 
-## Get a fresh project
+File định tuyến (Routes): Sử dụng kebab-case (Ví dụ: app/(tabs)/home.tsx).
 
-When you're ready, run:
+Thành phần UI (Components): Sử dụng PascalCase (Ví dụ: BusinessCard.tsx).
 
-```bash
-npm run reset-project
-```
+Hàm bổ trợ (Utils/Services): Sử dụng camelCase (Ví dụ: formatCurrency.ts).
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+📂 Cấu trúc dự án (Feature-based)
+Dự án được tổ chức theo module tính năng thay vì loại file, giúp dễ dàng quản lý khi quy mô phình to.
 
-## Learn more
+src/
+├── app/                  <-- EXPO ROUTER (Chỉ chứa định tuyến & Layout)
+│   ├── _layout.tsx       <-- Cấu hình Root (Fonts, Providers)
+│   ├── (tabs)/           <-- Điều hướng chính (Home, News, Profile)
+│   └── (auth)/           <-- Luồng đăng nhập/đăng ký
+│
+├── features/             <-- LOGIC NGHIỆP VỤ (Domain Driven)
+│   ├── business/         <-- Tính năng Doanh nghiệp
+│   │   ├── components/   <-- UI riêng cho tính năng này
+│   │   ├── hooks/        <-- useBusinessData.ts
+│   │   └── services/     <-- business.api.ts
+│   └── news/             <-- Tính năng Tin tức
+│
+├── components/           <-- DÙNG CHUNG (Shared UI)
+│   ├── ui/               <-- Các nguyên tử UI (Button, Input, Card)
+│   └── shared/           <-- Header, Loading, EmptyState
+│
+├── constants/            <-- Bảng màu, Kích thước, Cấu hình chung
+├── hooks/                <-- Các Hook dùng chung toàn hệ thống
+└── assets/               <-- Hình ảnh, Fonts, Icons
 
-To learn more about developing your project with Expo, look at the following resources:
+🔄 Luồng dữ liệu & Hiệu suất
+Truy xuất dữ liệu (GET): Không gọi API trực tiếp trong Component. Luôn thông qua useQuery để tận dụng cơ chế Caching và tự động Refetch khi mất mạng.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Gửi dữ liệu (POST/PUT): Sử dụng useMutation để quản lý trạng thái gửi và cập nhật UI ngay lập tức (Optimistic Updates).
 
-## Join the community
+Tối ưu danh sách: Sử dụng FlashList (từ Shopify) thay cho FlatList để đảm bảo ứng dụng luôn mượt mà 60FPS ngay cả khi danh sách doanh nghiệp lên tới hàng ngàn mục.
 
-Join our community of developers creating universal apps.
+Xử lý hình ảnh: Sử dụng expo-image để nén ảnh và hỗ trợ hiệu ứng Blur-up khi tải.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+🛠️ Hướng dẫn cài đặt cho Team
+1. Cài đặt thư viện:
+
+Bash
+npm install
+2. Khởi chạy môi trường phát triển:
+
+Bash
+npx expo start
+Sau khi chạy, dùng điện thoại có cài app Expo Go để quét mã QR.
+
+3. Kiểm tra chất lượng code (Linting):
+
+Bash
+npm run lint
+📝 Cam kết chất lượng (Quality Checks)
+No Any: Tuyệt đối không sử dụng kiểu dữ liệu any.
+
+No Console: Xóa bỏ toàn bộ console.log trước khi tạo Pull Request.
+
+Mobile-First: Mọi giao diện phải được kiểm tra trên cả màn hình nhỏ (Android) và màn hình có tai thỏ (iOS).
