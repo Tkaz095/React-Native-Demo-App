@@ -1,4 +1,5 @@
 import { MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React from "react";
 import {
   Animated,
@@ -17,19 +18,20 @@ interface DrawerMenuProps {
   onClose: () => void;
   onLogin: () => void;
   onRegister: () => void;
+  onMenuItemPress?: (label: string) => void;
 }
 
 interface MenuItem {
   label: string;
-  onPress?: () => void;
+  route?: string;
 }
 
 const menuItems: MenuItem[] = [
-  { label: "Trang chủ" },
-  { label: "Dịch vụ" },
-  { label: "Thành viên" },
-  { label: "Tin tức" },
-  { label: "Liên hệ" },
+  { label: "Trang chủ", route: "/" },
+  { label: "Dịch vụ", route: "/services" },
+  { label: "Thành viên", route: "/members" },
+  { label: "Tin tức", route: "/news" },
+  { label: "Liên hệ", route: "/contact" },
 ];
 
 const DrawerMenu: React.FC<DrawerMenuProps> = ({
@@ -39,6 +41,7 @@ const DrawerMenu: React.FC<DrawerMenuProps> = ({
   onRegister,
 }) => {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
 
   return (
     <Modal
@@ -80,7 +83,12 @@ const DrawerMenu: React.FC<DrawerMenuProps> = ({
               <TouchableOpacity
                 key={index}
                 style={styles.menuItem}
-                onPress={item.onPress || onClose}
+                onPress={() => {
+                  onClose();
+                  if (item.route) {
+                    setTimeout(() => router.push(item.route as any), 150);
+                  }
+                }}
                 activeOpacity={0.7}
               >
                 <Text style={styles.menuItemText}>{item.label}</Text>

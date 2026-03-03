@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Svg, { Path, Polyline, Circle as SvgCircle } from "react-native-svg";
 import {
   COST_VS_VALUE_MOCK,
@@ -17,7 +17,12 @@ function CardHeader({ title }: { title: string }) {
   return (
     <View style={shared.cardHeaderRow}>
       <Text style={shared.cardTitle}>{title}</Text>
-      <Ionicons name="information-circle-outline" size={16} color="#9CA3AF" />
+      <TouchableOpacity
+        onPress={() => Alert.alert("Thông tin", `Chi tiết về ${title}`)}
+        activeOpacity={0.7}
+      >
+        <Ionicons name="information-circle-outline" size={16} color="#9CA3AF" />
+      </TouchableOpacity>
     </View>
   );
 }
