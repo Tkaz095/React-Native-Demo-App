@@ -1,13 +1,13 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
-    Alert,
-    Linking,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  Linking,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
@@ -123,6 +123,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
         error={errors.fullName}
         icon="person"
         editable={!loading}
+        containerStyle={styles.compactInput}
       />
 
       {/* Email Input */}
@@ -140,6 +141,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
         keyboardType="email-address"
         autoCapitalize="none"
         editable={!loading}
+        containerStyle={styles.compactInput}
       />
 
       {/* Phone Input */}
@@ -156,6 +158,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
         icon="phone"
         keyboardType="phone-pad"
         editable={!loading}
+        containerStyle={styles.compactInput}
       />
 
       {/* Password Input */}
@@ -172,6 +175,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
         icon="lock"
         isPassword
         editable={!loading}
+        containerStyle={styles.compactInput}
       />
 
       {/* Confirm Password Input */}
@@ -188,6 +192,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
         icon="lock"
         isPassword
         editable={!loading}
+        containerStyle={styles.compactInput}
       />
 
       {/* Signup Button */}
@@ -230,44 +235,47 @@ const SignupForm: React.FC<SignupFormProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 20,
+    padding: 16,
+    paddingTop: 4,
   },
   title: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: "bold",
     color: "#333",
-    marginBottom: 8,
+    marginBottom: 4,
     textAlign: "center",
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 13,
     color: "#666",
-    marginBottom: 24,
+    marginBottom: 16,
     textAlign: "center",
+  },
+  compactInput: {
+    marginBottom: 10,
   },
   errorContainer: {
     flexDirection: "row",
     backgroundColor: "#FFF3F0",
     borderRadius: 8,
-    padding: 12,
+    padding: 10,
     marginBottom: 16,
     alignItems: "center",
   },
   errorText: {
-    fontSize: 13,
+    fontSize: 12,
     color: "#FF3B30",
     marginLeft: 8,
     flex: 1,
   },
   signupButton: {
-    marginTop: 8,
-    marginBottom: 20,
+    marginTop: 4,
+    marginBottom: 16,
   },
   dividerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 20,
+    marginVertical: 14,
   },
   divider: {
     flex: 1,
@@ -282,7 +290,7 @@ const styles = StyleSheet.create({
   socialContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 20,
+    marginBottom: 16,
   },
   socialButton: {
     flex: 1,
@@ -292,7 +300,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#E0E0E0",
     borderRadius: 8,
-    paddingVertical: 12,
+    paddingVertical: 10,
     marginHorizontal: 6,
   },
   socialButtonText: {
@@ -304,7 +312,7 @@ const styles = StyleSheet.create({
   loginContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    paddingBottom: 20,
+    paddingBottom: 16,
   },
   loginText: {
     fontSize: 13,
