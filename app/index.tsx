@@ -53,10 +53,10 @@ const LandingPage: React.FC = () => {
 
     // Navigate to dashboard based on role
     if (user.role === "admin") {
-      router.replace("/(tabs)" as const);
+      router.replace("/admin" as any);
       Alert.alert("Thành công", `Chào mừng ${user.name}!`);
     } else {
-      router.replace("/(tabs)" as const);
+      router.replace("/(tabs)" as any);
       Alert.alert("Thành công", `Chào mừng ${user.name}!`);
     }
   };
@@ -73,7 +73,10 @@ const LandingPage: React.FC = () => {
   };
 
   // Generate responsive styles dynamically
-  const styles = useMemo(() => getStyles(isDesktop, scale, moderateScale), [isDesktop, scale, moderateScale]);
+  const styles = useMemo(
+    () => getStyles(isDesktop, scale, moderateScale),
+    [isDesktop, scale, moderateScale],
+  );
 
   return (
     <View style={styles.container}>
@@ -88,7 +91,7 @@ const LandingPage: React.FC = () => {
               opacity: currentImageIndex === index ? 1 : 0,
               width: "100%",
               height: "100%",
-            }
+            },
           ]}
           resizeMode="cover"
         />
@@ -98,12 +101,7 @@ const LandingPage: React.FC = () => {
       <View style={styles.overlay} />
 
       {/* Main Content Area using SafeAreaView correctly */}
-      <SafeAreaView
-        style={[
-          styles.mainContent,
-          { width, minHeight: height }
-        ]}
-      >
+      <SafeAreaView style={[styles.mainContent, { width, minHeight: height }]}>
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerLeft}>
@@ -124,34 +122,51 @@ const LandingPage: React.FC = () => {
         </View>
 
         {/* Hero Content */}
-        <View style={[styles.heroContent, isDesktop && styles.heroContentDesktop]}>
+        <View
+          style={[styles.heroContent, isDesktop && styles.heroContentDesktop]}
+        >
           <View style={[styles.badge, isDesktop && styles.badgeDesktop]}>
             <Text style={styles.badgeText}>
               CHÀO MỪNG ĐẾN VỚI HỘI DOANH NGHIỆP
             </Text>
           </View>
           <Text style={[styles.title, isDesktop && styles.titleDesktop]}>
-            Kết Nối Doanh{isDesktop ? " " : "\n"}Nghiệp - Kiến Tạo{isDesktop ? " " : "\n"}Tương Lai
+            Kết Nối Doanh{isDesktop ? " " : "\n"}Nghiệp - Kiến Tạo
+            {isDesktop ? " " : "\n"}Tương Lai
           </Text>
-          <Text style={[styles.description, isDesktop && styles.descriptionDesktop]}>
+          <Text
+            style={[styles.description, isDesktop && styles.descriptionDesktop]}
+          >
             Mạng lưới kinh doanh lớn mạnh nhất khu vực, giúp doanh nghiệp của
             bạn phát triển bền vững và bứt phá thành công.
           </Text>
 
           {/* CTA Buttons */}
-          <View style={[styles.buttonGroup, isDesktop && styles.buttonGroupDesktop]}>
+          <View
+            style={[styles.buttonGroup, isDesktop && styles.buttonGroupDesktop]}
+          >
             <TouchableOpacity
-              style={[styles.primaryButton, isDesktop && styles.desktopButtonAction]}
+              style={[
+                styles.primaryButton,
+                isDesktop && styles.desktopButtonAction,
+              ]}
               onPress={() => openAuthModal("signup")}
               activeOpacity={0.8}
             >
               <Text style={styles.primaryButtonText}>
                 Đăng ký hội viên ngay
               </Text>
-              <MaterialIcons name="chevron-right" size={moderateScale(20)} color="#FFF" />
+              <MaterialIcons
+                name="chevron-right"
+                size={moderateScale(20)}
+                color="#FFF"
+              />
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.secondaryButton, isDesktop && styles.desktopButtonAction]}
+              style={[
+                styles.secondaryButton,
+                isDesktop && styles.desktopButtonAction,
+              ]}
               onPress={handleLearnMore}
               activeOpacity={0.8}
             >
@@ -167,7 +182,9 @@ const LandingPage: React.FC = () => {
                 onPress={() => setCurrentImageIndex(index)}
                 style={[
                   styles.dot,
-                  index === currentImageIndex ? styles.dotActive : styles.dotInactive,
+                  index === currentImageIndex
+                    ? styles.dotActive
+                    : styles.dotInactive,
                 ]}
               />
             ))}
@@ -194,7 +211,11 @@ const LandingPage: React.FC = () => {
   );
 };
 
-const getStyles = (isDesktop: boolean, scale: (s: number) => number, moderateScale: (s: number) => number) =>
+const getStyles = (
+  isDesktop: boolean,
+  scale: (s: number) => number,
+  moderateScale: (s: number) => number,
+) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -339,26 +360,26 @@ const getStyles = (isDesktop: boolean, scale: (s: number) => number, moderateSca
       backgroundColor: "#1976D2",
     },
     heroContentDesktop: {
-      alignItems: 'center',
-      justifyContent: 'center',
+      alignItems: "center",
+      justifyContent: "center",
       paddingHorizontal: "10%",
     },
     titleDesktop: {
       fontSize: moderateScale(56),
-      textAlign: 'center',
+      textAlign: "center",
       lineHeight: moderateScale(70),
       marginBottom: scale(24),
     },
     descriptionDesktop: {
       fontSize: moderateScale(18),
-      textAlign: 'center',
+      textAlign: "center",
       maxWidth: 800,
       lineHeight: moderateScale(28),
       marginBottom: scale(40),
     },
     buttonGroupDesktop: {
-      flexDirection: 'row',
-      justifyContent: 'center',
+      flexDirection: "row",
+      justifyContent: "center",
       gap: scale(20),
       marginBottom: scale(40),
     },
@@ -367,7 +388,7 @@ const getStyles = (isDesktop: boolean, scale: (s: number) => number, moderateSca
       minWidth: 220,
     },
     badgeDesktop: {
-      alignSelf: 'center',
+      alignSelf: "center",
     },
   });
 
