@@ -3,10 +3,10 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Svg, { Path, Polyline, Circle as SvgCircle } from "react-native-svg";
 import {
-    CONTENT_EFFICIENCY_MOCK,
-    INTERACTION_QUALITY_MOCK,
-    NEW_MEMBER_PERFORMANCE_MOCK,
-    PROJECT_FORMATION_MOCK,
+  CONTENT_EFFICIENCY_MOCK,
+  INTERACTION_QUALITY_MOCK,
+  NEW_MEMBER_PERFORMANCE_MOCK,
+  PROJECT_FORMATION_MOCK,
 } from "../services/strategic-dashboard.mock";
 
 // ─── Shared ─────────────────────────────────────────────────────────────────
@@ -295,20 +295,16 @@ export function StrategicTier2() {
       </View>
       <View style={styles.cardList}>
         <View style={styles.row}>
-          <View style={styles.half}>
-            <ProjectFormationChart />
-          </View>
-          <View style={styles.half}>
-            <ContentEfficiencyChart />
-          </View>
+          <ProjectFormationChart />
         </View>
         <View style={styles.row}>
-          <View style={styles.half}>
-            <InteractionQualityIndex />
-          </View>
-          <View style={styles.half}>
-            <NewMemberPerformance />
-          </View>
+          <ContentEfficiencyChart />
+        </View>
+        <View style={styles.row}>
+          <InteractionQualityIndex />
+        </View>
+        <View style={styles.row}>
+          <NewMemberPerformance />
         </View>
       </View>
     </View>
@@ -388,8 +384,7 @@ const shared = StyleSheet.create({
 const styles = StyleSheet.create({
   tier: { gap: 12 },
   cardList: { gap: 10 },
-  row: { flexDirection: "row", gap: 10 },
-  half: { flex: 1 },
+  row: { flexDirection: "column", gap: 10 },
   bigValueRow: {
     flexDirection: "row",
     alignItems: "baseline",
