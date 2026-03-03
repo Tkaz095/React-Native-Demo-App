@@ -1,23 +1,22 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
+import { StrategicDashboard } from '../components/StrategicDashboard';
 
 export default function StrategicDashboardPage() {
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Nội dung trang - Dashboard Chiến Lược</Text>
-        </View>
+        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+            <StrategicDashboard />
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 16,
+        backgroundColor: '#F9FAFB',
     },
-    text: {
-        fontSize: 16,
-        color: '#6B7280',
-    }
+    content: {
+        padding: 16,
+        paddingBottom: 32,
+    },
 });
