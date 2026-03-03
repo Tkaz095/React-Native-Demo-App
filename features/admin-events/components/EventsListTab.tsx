@@ -16,6 +16,10 @@ export default function EventsListTab({ events, eventTypes }: Props) {
     const [filterStatus, setFilterStatus] = useState('all');
     const [showFilterModal, setShowFilterModal] = useState(false);
 
+    const ITEMS_PER_PAGE = 10;
+    const [page, setPage] = useState(1);
+    const [loadingMore, setLoadingMore] = useState(false);
+
     const filteredEvents = useMemo(() => {
         return events.filter(event => {
             const matchesSearch =
@@ -29,6 +33,26 @@ export default function EventsListTab({ events, eventTypes }: Props) {
             return matchesSearch && matchesType && matchesStatus;
         });
     }, [events, searchQuery, filterType, filterStatus]);
+
+    // Khi có bộ lọc mới thay đổi, reset lại page = 1
+    React.useEffect(() => {
+        setPage(1);
+    }, [filteredEvents.length]);
+
+    const currentEvents = useMemo(() => {
+        return filteredEvents.slice(0, page * ITEMS_PER_PAGE);
+    }, [filteredEvents, page]);
+
+    const hasMore = currentEvents.length < filteredEvents.length;
+
+    const handleLoadMore = () => {
+        if (!hasMore || loadingMore) return;
+        setLoadingMore(true);
+        setTimeout(() => {
+            setPage((prev) => prev + 1);
+            setLoadingMore(false);
+        }, 500);
+    };
 
     const activeFilterCount = (filterType !== 'all' ? 1 : 0) + (filterStatus !== 'all' ? 1 : 0);
 
@@ -133,18 +157,28 @@ export default function EventsListTab({ events, eventTypes }: Props) {
             </View>
 
             <FlatList
-                data={filteredEvents}
+                data={currentEvents}
                 keyExtractor={(item) => item.id}
                 renderItem={renderItem}
                 contentContainerStyle={styles.listContent}
                 ListHeaderComponent={
-                    <Text style={styles.resultCount}>Hiển thị {filteredEvents.length} sự kiện</Text>
+                    <Text style={styles.resultCount}>Hiển thị {currentEvents.length} / {filteredEvents.length} sự kiện</Text>
                 }
                 ListEmptyComponent={
                     <View style={styles.emptyContainer}>
                         <Ionicons name="calendar-clear-outline" size={48} color="#D1D5DB" />
                         <Text style={styles.emptyText}>Không tìm thấy sự kiện nào</Text>
                     </View>
+                }
+                onEndReached={handleLoadMore}
+                onEndReachedThreshold={0.5}
+                ListFooterComponent={
+                    loadingMore ? (
+                        <View style={{ paddingVertical: 16, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 8 }}>
+                            <Ionicons name="sync" size={20} color="#94A3B8" />
+                            <Text style={{ fontSize: 13, color: '#94A3B8', fontWeight: '500' }}>Đang tải thêm...</Text>
+                        </View>
+                    ) : <View style={{ height: 20 }} />
                 }
             />
 
