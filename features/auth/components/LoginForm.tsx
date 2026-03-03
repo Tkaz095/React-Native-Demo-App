@@ -250,7 +250,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
             Admin: {DEMO_ACCOUNT.email} / {DEMO_ACCOUNT.password}
           </Text>
           <Text style={styles.demoInfo}>
-            Hội viên: member@example.com / member123
+            Hội viên: member@hoidoanhnghiep.vn / member123
           </Text>
         </View>
         <TouchableOpacity style={styles.fillDemoButton} onPress={handleFillDemoAccount} activeOpacity={0.8}>
@@ -290,7 +290,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 20,
   },
   title: {

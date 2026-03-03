@@ -1,11 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Svg, { Path, Polyline, Circle as SvgCircle } from "react-native-svg";
 import {
-    COST_VS_VALUE_MOCK,
-    MEMBER_SOURCE_QUALITY_MOCK,
-    OPERATIONAL_BALANCE_MOCK,
+  COST_VS_VALUE_MOCK,
+  MEMBER_SOURCE_QUALITY_MOCK,
+  OPERATIONAL_BALANCE_MOCK,
 } from "../services/strategic-dashboard.mock";
 
 // ─── Shared ─────────────────────────────────────────────────────────────────
@@ -17,7 +17,12 @@ function CardHeader({ title }: { title: string }) {
   return (
     <View style={shared.cardHeaderRow}>
       <Text style={shared.cardTitle}>{title}</Text>
-      <Ionicons name="information-circle-outline" size={16} color="#9CA3AF" />
+      <TouchableOpacity
+        onPress={() => Alert.alert("Thông tin", `Chi tiết về ${title}`)}
+        activeOpacity={0.7}
+      >
+        <Ionicons name="information-circle-outline" size={16} color="#9CA3AF" />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -430,9 +435,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  segmentLeft: { flexDirection: "row", alignItems: "center", gap: 6 },
+  segmentLeft: { flex: 1, flexDirection: "row", alignItems: "center", gap: 6, paddingRight: 8 },
   segmentDot: { width: 8, height: 8, borderRadius: 4 },
-  segmentLabel: { fontSize: 12, color: "#6B7280", flex: 1 },
+  segmentLabel: { fontSize: 12, color: "#6B7280" },
   segmentValue: { fontSize: 12 },
   segmentValueBold: { fontWeight: "700", color: "#111827" },
   segmentTarget: { color: "#9CA3AF" },
@@ -445,6 +450,7 @@ const styles = StyleSheet.create({
     borderColor: "#A7F3D0",
     borderRadius: 8,
     padding: 10,
+    flexWrap: "wrap",
   },
   healthCheckBadge: {
     width: 18,

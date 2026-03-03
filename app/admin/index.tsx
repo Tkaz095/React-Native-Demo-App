@@ -1,5 +1,5 @@
-import AdminDashboardPage from '@/features/admin-dashboard/pages/AdminDashboardPage';
+import { Redirect } from "expo-router";
 
-export default function AdminDashboardRoute() {
-    return <AdminDashboardPage />;
+export default function AdminIndexRoute() {
+  return <Redirect href={"/admin/strategic-dashboard" as any} />;
 }

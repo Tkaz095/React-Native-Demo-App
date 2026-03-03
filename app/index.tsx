@@ -53,24 +53,23 @@ const LandingPage: React.FC = () => {
 
     // Navigate to dashboard based on role
     if (user.role === "admin") {
-      router.replace("/admin" as any);
-      Alert.alert("Thành công", `Chào mừng ${user.name}!`);
+      router.replace("/admin/strategic-dashboard" as any);
     } else {
       router.replace("/(tabs)" as any);
-      Alert.alert("Thành công", `Chào mừng ${user.name}!`);
     }
   };
 
   const handleLearnMore = () => {
     Alert.alert(
       "Thông tin thêm",
-      "Hỏi Doanh Nghiệp là nền tảng kết nối cộng đồng doanh nhân, giúp bạn:\n\n" +
+      "Hội Doanh Nghiệp là nền tảng kết nối cộng đồng doanh nhân, giúp bạn:\n\n" +
       "• Kết nối với các doanh nghiệp khác\n" +
       "• Chia sẻ kinh nghiệm kinh doanh\n" +
       "• Tìm kiếm cơ hội hợp tác\n" +
       "• Cập nhật tin tức ngành",
     );
   };
+
 
   // Generate responsive styles dynamically
   const styles = useMemo(
@@ -241,6 +240,7 @@ const getStyles = (
     headerLeft: {
       flexDirection: "row",
       alignItems: "center",
+      flex: 1,
     },
     logo: {
       width: scale(36),

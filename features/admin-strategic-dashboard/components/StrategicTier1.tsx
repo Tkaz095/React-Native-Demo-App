@@ -1,10 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import {
-    CONNECTION_RATE_MOCK,
-    FUNNEL_MOCK,
-    PERFORMANCE_SCORE_MOCK,
+  CONNECTION_RATE_MOCK,
+  FUNNEL_MOCK,
+  PERFORMANCE_SCORE_MOCK,
 } from "../services/strategic-dashboard.mock";
 
 // ─── Shared ─────────────────────────────────────────────────────────────────
@@ -49,9 +49,12 @@ function CardHeader({
   return (
     <View style={shared.cardHeaderRow}>
       <Text style={shared.cardTitle}>{title}</Text>
-      {description ? (
+      <TouchableOpacity
+        onPress={() => Alert.alert("Thông tin", description || `Chi tiết về ${title}`)}
+        activeOpacity={0.7}
+      >
         <Ionicons name="information-circle-outline" size={16} color="#9CA3AF" />
-      ) : null}
+      </TouchableOpacity>
     </View>
   );
 }
