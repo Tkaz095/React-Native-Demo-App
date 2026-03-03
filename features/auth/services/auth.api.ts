@@ -76,6 +76,7 @@ export const authApi = {
 
     const newUser: User = {
       id: `user_${Date.now()}`,
+      username: data.email.split('@')[0], // Extract username from email
       email: data.email,
       phone: data.phone,
       password: data.password,
