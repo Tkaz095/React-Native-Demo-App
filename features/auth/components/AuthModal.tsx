@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 20,
     elevation: 10,
+    flexShrink: 1,
   },
   header: {
     paddingHorizontal: 16,
@@ -115,6 +116,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   content: {
+    flexShrink: 1,
     paddingBottom: 16, // added padding bottom to let scrollview breathe
   },
 });
