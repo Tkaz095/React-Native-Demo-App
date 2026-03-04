@@ -36,6 +36,11 @@ export function AdminHeader() {
         router.push('/admin/profile' as any);
     };
 
+    const handleNavigateSettings = () => {
+        setDropdownVisible(false);
+        router.push('/admin/settings' as any);
+    };
+
     return (
         <View style={styles.header}>
             <View style={styles.leftSection}>
@@ -62,6 +67,11 @@ export function AdminHeader() {
                     <TouchableWithoutFeedback onPress={() => setDropdownVisible(false)}>
                         <View style={styles.modalOverlay}>
                             <View style={styles.dropdownMenu}>
+                                <TouchableOpacity style={styles.dropdownItem} onPress={handleNavigateSettings}>
+                                    <Ionicons name="settings-outline" size={20} color="#4B5563" />
+                                    <Text style={styles.dropdownItemText}>Cài đặt</Text>
+                                </TouchableOpacity>
+                                <View style={styles.dropdownDivider} />
                                 <TouchableOpacity style={styles.dropdownItem} onPress={handleNavigateProfile}>
                                     <Ionicons name="person-outline" size={20} color="#4B5563" />
                                     <Text style={styles.dropdownItemText}>Thông tin cá nhân</Text>

@@ -1,16 +1,16 @@
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import {
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    KeyboardAvoidingView,
+    Modal,
+    Platform,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -175,7 +175,12 @@ export function PostsFilterBar({
   };
 
   const handleClearModal = () => {
-    setDraftFilters({ ...draftFilters, status: "all", dateFrom: "", dateTo: "" });
+    setDraftFilters({
+      ...draftFilters,
+      status: "all",
+      dateFrom: "",
+      dateTo: "",
+    });
   };
 
   return (
@@ -206,9 +211,9 @@ export function PostsFilterBar({
           style={styles.filterBtn}
           onPress={() => setShowFilterModal(true)}
         >
-          <Ionicons
-            name="filter"
-            size={18}
+          <MaterialIcons
+            name="filter-list"
+            size={22}
             color="#1E293B"
           />
           {hasAdvancedFilter && <View style={styles.filterBadge} />}
@@ -371,7 +376,7 @@ const styles = StyleSheet.create({
   // --- Modal Bottom Sheet UI (Ảnh 2) ---
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "transparent",
     justifyContent: "flex-end",
   },
   modalSheet: {

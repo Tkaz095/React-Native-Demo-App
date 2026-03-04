@@ -1,21 +1,21 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
-  Alert,
-  Linking,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    Alert,
+    Linking,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
-import { DEMO_ACCOUNT } from "../data/mockUsers";
+import { DEMO_ACCOUNT, User } from "../data/mockUsers";
 import { authApi, LoginCredentials } from "../services/auth.api";
 
 export interface LoginFormProps {
-  onLoginSuccess: (user: any, token: string) => void;
+  onLoginSuccess: (user: User, token: string) => void;
   onSwitchToSignup: () => void;
 }
 
@@ -253,7 +253,11 @@ const LoginForm: React.FC<LoginFormProps> = ({
             Hội viên: member@hoidoanhnghiep.vn / member123
           </Text>
         </View>
-        <TouchableOpacity style={styles.fillDemoButton} onPress={handleFillDemoAccount} activeOpacity={0.8}>
+        <TouchableOpacity
+          style={styles.fillDemoButton}
+          onPress={handleFillDemoAccount}
+          activeOpacity={0.8}
+        >
           <MaterialIcons name="auto-fix-high" size={16} color="#FFF" />
           <Text style={styles.fillDemoButtonText}>Điền nhanh</Text>
         </TouchableOpacity>

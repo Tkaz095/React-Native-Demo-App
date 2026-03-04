@@ -1,19 +1,20 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
-  Alert,
-  Linking,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    Alert,
+    Linking,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
+import { User } from "../data/mockUsers";
 
 export interface SignupFormProps {
-  onSignupSuccess: (user: any, token: string) => void;
+  onSignupSuccess: (user: User, token: string) => void;
   onSwitchToLogin: () => void;
 }
 
@@ -67,10 +68,12 @@ const SignupForm: React.FC<SignupFormProps> = ({
 
       const mockUser = {
         id: Date.now().toString(),
+        username: email.split("@")[0],
         name: fullName,
         email,
         phone,
-        role: "member",
+        password: password,
+        role: "member" as const,
       };
       const mockToken = `token_${Date.now()}`;
 
