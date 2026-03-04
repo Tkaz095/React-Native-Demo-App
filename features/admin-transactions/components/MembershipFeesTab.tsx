@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import React, { useMemo, useState } from 'react';
 import { FlatList, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { MEMBERSHIP_FEES_LIST_MOCK, MEMBERSHIP_STATS_MOCK } from '../data/membership-fees.data';
@@ -314,7 +314,7 @@ export function MembershipFeesTab() {
                         style={styles.filterButton}
                         onPress={() => setIsFilterVisible(true)}
                     >
-                        <Ionicons name="filter" size={18} color="#1E293B" />
+                        <MaterialIcons name="filter-list" size={22} color="#1E293B" />
                     </TouchableOpacity>
                 </View>
             </View>
