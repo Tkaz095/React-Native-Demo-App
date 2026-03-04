@@ -1,655 +1,177 @@
 import { Ionicons } from "@expo/vector-icons";
-import React, { useMemo, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
-    FlatList,
-    Modal,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Animated,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { TRANSACTIONS_LIST_MOCK } from "../data/admin-transactions.data";
-import { Transaction } from "../types/admin-transactions.types";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { EventFeesTab } from "../components/EventFeesTab";
+import { MembershipFeesTab } from "../components/MembershipFeesTab";
+import { TransactionsTab } from "../components/TransactionsTab";
+
+const TABS = [
+  { key: "giao-dich", label: "Giao dịch", icon: "swap-horizontal-outline" as const },
+  { key: "phi-hoi-vien", label: "Phí hội viên", icon: "people-outline" as const },
+  { key: "phi-su-kien", label: "Phí sự kiện", icon: "calendar-outline" as const },
+] as const;
+
+type TabKey = typeof TABS[number]["key"];
 
 export default function TransactionsPage() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filterVisible, setFilterVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabKey>("giao-dich");
+  const indicatorAnim = useRef(new Animated.Value(0)).current;
+  const tabScrollRef = useRef<ScrollView>(null);
 
-  const [filterType, setFilterType] = useState("all");
-  const [filterStatus, setFilterStatus] = useState("all");
-
-  const [transactions] = useState<Transaction[]>(TRANSACTIONS_LIST_MOCK);
-
-  const ITEMS_PER_PAGE = 10;
-  const [page, setPage] = useState(1);
-  const [loadingMore, setLoadingMore] = useState(false);
-
-  const filteredTransactions = useMemo(() => {
-    return transactions.filter((tx) => {
-      const matchesSearch = tx.memberName
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
-      const matchesType = filterType === "all" || tx.type === filterType;
-      const matchesStatus =
-        filterStatus === "all" || tx.status === filterStatus;
-
-      return matchesSearch && matchesType && matchesStatus;
-    });
-  }, [searchQuery, filterType, filterStatus, transactions]);
-
-  // Khi lọc thay đổi, reset lại page
-  React.useEffect(() => {
-    setPage(1);
-  }, [filteredTransactions.length]);
-
-  const currentTransactions = useMemo(() => {
-    return filteredTransactions.slice(0, page * ITEMS_PER_PAGE);
-  }, [filteredTransactions, page]);
-
-  const hasMore = currentTransactions.length < filteredTransactions.length;
-
-  const handleLoadMore = () => {
-    if (!hasMore || loadingMore) return;
-    setLoadingMore(true);
-    setTimeout(() => {
-      setPage((prev) => prev + 1);
-      setLoadingMore(false);
-    }, 500);
-  };
-
-  const activeFilterCount =
-    (filterType !== "all" ? 1 : 0) + (filterStatus !== "all" ? 1 : 0);
-
-  const clearFilters = () => {
-    setFilterType("all");
-    setFilterStatus("all");
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(amount);
-  };
-
-  const getTypeLabel = (type: string) => {
-    switch (type) {
-      case "TG":
-        return "Phí tham gia";
-      case "HH":
-        return "Phí hoa hồng";
-      case "HV":
-        return "Phí hội viên";
-      default:
-        return type;
-    }
-  };
-
-  const getStatusStyle = (status: string) => {
-    switch (status) {
-      case "success":
-        return {
-          bg: "#ECFDF5",
-          text: "#059669",
-          border: "#D1FAE5",
-          label: "Thành công",
-        };
-      case "pending":
-        return {
-          bg: "#FFF7ED",
-          text: "#C2410C",
-          border: "#FFEDD5",
-          label: "Chờ xử lý",
-        };
-      case "failed":
-        return {
-          bg: "#FEF2F2",
-          text: "#DC2626",
-          border: "#FEE2E2",
-          label: "Thất bại",
-        };
-      default:
-        return {
-          bg: "#F3F4F6",
-          text: "#374151",
-          border: "#E5E7EB",
-          label: status,
-        };
-    }
-  };
-
-  const renderTransactionCard = ({ item }: { item: Transaction }) => {
-    const statusStyle = getStatusStyle(item.status);
-
-    return (
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
-          <View style={styles.companyInfo}>
-            <View style={styles.iconContainer}>
-              <Ionicons name="receipt-outline" size={20} color="#1976D2" />
-            </View>
-            <View style={styles.companyText}>
-              <Text style={styles.companyName} numberOfLines={1}>
-                {item.memberName}
-              </Text>
-              <Text style={styles.transactionId}>ID: {item.id}</Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.cardBody}>
-          <View style={styles.infoRowSpaceBetween}>
-            <Text style={styles.infoLabel}>Loại giao dịch:</Text>
-            <Text style={styles.infoValue}>{getTypeLabel(item.type)}</Text>
-          </View>
-          <View style={styles.infoRowSpaceBetween}>
-            <Text style={styles.infoLabel}>Số tiền:</Text>
-            <Text style={styles.amountValue}>
-              {formatCurrency(item.amount)}
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.cardFooter}>
-          <View style={styles.badges}>
-            <View
-              style={[
-                styles.badge,
-                {
-                  backgroundColor: statusStyle.bg,
-                  borderColor: statusStyle.border,
-                },
-              ]}
-            >
-              <Text style={[styles.badgeText, { color: statusStyle.text }]}>
-                {statusStyle.label}
-              </Text>
-            </View>
-          </View>
-        </View>
-      </View>
-    );
+  const handleTabChange = (key: TabKey, index: number) => {
+    setActiveTab(key);
+    Animated.spring(indicatorAnim, {
+      toValue: index,
+      useNativeDriver: false,
+      speed: 20,
+      bounciness: 2,
+    }).start();
   };
 
   return (
-    <View style={styles.container}>
-      {/* Header / Search */}
-      <View style={styles.header}>
-        <View style={styles.searchContainer}>
-          <Ionicons
-            name="search"
-            size={20}
-            color="#9CA3AF"
-            style={styles.searchIcon}
-          />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Tìm theo tên đối tác..."
-            placeholderTextColor="#9CA3AF"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-          {searchQuery.length > 0 && (
-            <TouchableOpacity
-              onPress={() => setSearchQuery("")}
-              style={styles.clearIcon}
-            >
-              <Ionicons name="close-circle" size={18} color="#9CA3AF" />
-            </TouchableOpacity>
-          )}
+    <SafeAreaView style={styles.safeArea} edges={["top"]}>
+      {/* Page header */}
+      <View style={styles.pageHeader}>
+        <View style={styles.headerTitleRow}>
+          <View style={styles.headerIcon}>
+            <Ionicons name="receipt-outline" size={20} color="#F59E0B" />
+          </View>
+          <View>
+            <Text style={styles.pageTitle}>Quản lý Giao dịch</Text>
+            <Text style={styles.pageSubtitle}>Theo dõi toàn bộ giao dịch tài chính</Text>
+          </View>
         </View>
-        <TouchableOpacity
-          style={[
-            styles.filterButton,
-            activeFilterCount > 0 && styles.filterButtonActive,
-          ]}
-          onPress={() => setFilterVisible(true)}
-        >
-          <Ionicons
-            name="filter"
-            size={20}
-            color={activeFilterCount > 0 ? "#1976D2" : "#4B5563"}
-          />
-          {activeFilterCount > 0 && (
-            <View style={styles.filterBadge}>
-              <Text style={styles.filterBadgeText}>{activeFilterCount}</Text>
-            </View>
-          )}
-        </TouchableOpacity>
       </View>
 
-      {/* List */}
-      <FlatList
-        data={currentTransactions}
-        keyExtractor={(item) => item.id}
-        renderItem={renderTransactionCard}
-        contentContainerStyle={styles.listContent}
-        showsVerticalScrollIndicator={false}
-        ListHeaderComponent={
-          <Text style={styles.resultCount}>
-            Hiển thị {currentTransactions.length} /{" "}
-            {filteredTransactions.length} giao dịch
-          </Text>
-        }
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Ionicons name="search-outline" size={48} color="#D1D5DB" />
-            <Text style={styles.emptyText}>Không tìm thấy giao dịch nào</Text>
-          </View>
-        }
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={
-          loadingMore ? (
-            <View
-              style={{
-                paddingVertical: 16,
-                alignItems: "center",
-                justifyContent: "center",
-                flexDirection: "row",
-                gap: 8,
-              }}
-            >
-              <Ionicons name="sync" size={20} color="#94A3B8" />
-              <Text
-                style={{ fontSize: 13, color: "#94A3B8", fontWeight: "500" }}
-              >
-                Đang tải thêm...
-              </Text>
-            </View>
-          ) : (
-            <View style={{ height: 20 }} />
-          )
-        }
-      />
-
-      {/* Filter Modal */}
-      <Modal
-        visible={filterVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setFilterVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <Pressable
-            style={StyleSheet.absoluteFill}
-            onPress={() => setFilterVisible(false)}
-          />
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Bộ lọc tìm kiếm</Text>
+      {/* Tab Bar */}
+      <View style={styles.tabBarContainer}>
+        <ScrollView
+          ref={tabScrollRef}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.tabBarContent}
+        >
+          {TABS.map((tab, index) => {
+            const isActive = activeTab === tab.key;
+            return (
               <TouchableOpacity
-                onPress={() => setFilterVisible(false)}
-                style={styles.closeModalButton}
+                key={tab.key}
+                style={styles.tabItem}
+                onPress={() => handleTabChange(tab.key, index)}
+                activeOpacity={0.7}
               >
-                <Ionicons name="close" size={24} color="#6B7280" />
+                <Ionicons
+                  name={tab.icon}
+                  size={16}
+                  color={isActive ? "#1E293B" : "#94A3B8"}
+                  style={styles.tabIcon}
+                />
+                <Text style={[styles.tabLabel, isActive && styles.tabLabelActive]}>
+                  {tab.label}
+                </Text>
+                {isActive && <View style={styles.activeIndicator} />}
               </TouchableOpacity>
-            </View>
+            );
+          })}
+        </ScrollView>
+        <View style={styles.tabBorder} />
+      </View>
 
-            <ScrollView
-              style={styles.modalBody}
-              showsVerticalScrollIndicator={false}
-            >
-              <View style={styles.filterSection}>
-                <Text style={styles.filterLabel}>Loại giao dịch</Text>
-                <View style={styles.chipWrap}>
-                  {[
-                    { val: "all", label: "Tất cả" },
-                    { val: "TG", label: "Phí tham gia" },
-                    { val: "HH", label: "Phí hoa hồng" },
-                    { val: "HV", label: "Phí hội viên" },
-                  ].map((type) => (
-                    <TouchableOpacity
-                      key={type.val}
-                      style={[
-                        styles.chip,
-                        filterType === type.val && styles.chipActive,
-                      ]}
-                      onPress={() => setFilterType(type.val)}
-                    >
-                      <Text
-                        style={[
-                          styles.chipText,
-                          filterType === type.val && styles.chipTextActive,
-                        ]}
-                      >
-                        {type.label}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </View>
-
-              <View style={styles.filterSection}>
-                <Text style={styles.filterLabel}>Trạng thái</Text>
-                <View style={styles.chipWrap}>
-                  {[
-                    { val: "all", label: "Tất cả" },
-                    { val: "success", label: "Thành công" },
-                    { val: "pending", label: "Chờ xử lý" },
-                    { val: "failed", label: "Thất bại" },
-                  ].map((st) => (
-                    <TouchableOpacity
-                      key={st.val}
-                      style={[
-                        styles.chip,
-                        filterStatus === st.val && styles.chipActive,
-                      ]}
-                      onPress={() => setFilterStatus(st.val)}
-                    >
-                      <Text
-                        style={[
-                          styles.chipText,
-                          filterStatus === st.val && styles.chipTextActive,
-                        ]}
-                      >
-                        {st.label}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </View>
-            </ScrollView>
-
-            <View style={styles.modalFooter}>
-              <TouchableOpacity
-                style={[styles.modalBtn, styles.modalBtnSecondary]}
-                onPress={clearFilters}
-              >
-                <Text style={styles.modalBtnSecondaryText}>Xóa bộ lọc</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.modalBtn, styles.modalBtnPrimary]}
-                onPress={() => setFilterVisible(false)}
-              >
-                <Text style={styles.modalBtnPrimaryText}>Áp dụng</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
-    </View>
+      {/* Tab Content */}
+      <View style={styles.tabContent}>
+        {activeTab === "giao-dich" && <TransactionsTab />}
+        {activeTab === "phi-hoi-vien" && <MembershipFeesTab />}
+        {activeTab === "phi-su-kien" && <EventFeesTab />}
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: "#F3F4F6",
+    backgroundColor: "#F8FAFC",
   },
-  header: {
+  pageHeader: {
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F1F5F9",
+  },
+  headerTitleRow: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 16,
-    backgroundColor: "#FFFFFF",
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
     gap: 12,
   },
-  searchContainer: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F9FAFB",
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    height: 40,
-  },
-  searchIcon: {
-    marginRight: 8,
-  },
-  searchInput: {
-    flex: 1,
-    height: "100%",
-    fontSize: 14,
-    color: "#111827",
-  },
-  clearIcon: {
-    padding: 4,
-  },
-  filterButton: {
+  headerIcon: {
     width: 40,
     height: 40,
-    backgroundColor: "#F9FAFB",
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    position: "relative",
-  },
-  filterButtonActive: {
-    backgroundColor: "#EFF6FF",
-    borderColor: "#BFDBFE",
-  },
-  filterBadge: {
-    position: "absolute",
-    top: -4,
-    right: -4,
-    backgroundColor: "#EF4444",
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "#FFFFFF",
-  },
-  filterBadgeText: {
-    color: "#FFFFFF",
-    fontSize: 9,
-    fontWeight: "bold",
-  },
-  listContent: {
-    padding: 16,
-    paddingBottom: 32,
-    gap: 12,
-  },
-  resultCount: {
-    fontSize: 13,
-    color: "#6B7280",
-    marginBottom: 4,
-    fontWeight: "500",
-  },
-  card: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
-    borderWidth: 1,
-    borderColor: "#F3F4F6",
-  },
-  cardHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    marginBottom: 12,
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#F3F4F6",
-  },
-  companyInfo: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-    gap: 12,
-  },
-  iconContainer: {
-    width: 40,
-    height: 40,
-    backgroundColor: "#EFF6FF",
     borderRadius: 10,
+    backgroundColor: "#1E293B",
     alignItems: "center",
     justifyContent: "center",
   },
-  companyText: {
-    flex: 1,
-  },
-  companyName: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: "#111827",
-    marginBottom: 2,
-  },
-  transactionId: {
-    fontSize: 12,
-    color: "#6B7280",
-  },
-  cardBody: {
-    gap: 8,
-    marginBottom: 12,
-  },
-  infoRowSpaceBetween: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  infoLabel: {
-    fontSize: 13,
-    color: "#6B7280",
-  },
-  infoValue: {
-    fontSize: 13,
-    color: "#374151",
-    fontWeight: "500",
-  },
-  amountValue: {
-    fontSize: 14,
-    color: "#1D4ED8",
-    fontWeight: "bold",
-  },
-  cardFooter: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
-  },
-  badges: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  badge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-    borderWidth: 1,
-  },
-  badgeText: {
-    fontSize: 12,
-    fontWeight: "600",
-  },
-  emptyContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 60,
-  },
-  emptyText: {
-    marginTop: 12,
-    fontSize: 15,
-    color: "#6B7280",
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "transparent",
-    justifyContent: "flex-end",
-  },
-  modalContent: {
-    backgroundColor: "#FFFFFF",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    maxHeight: "90%",
-  },
-  modalHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#F3F4F6",
-  },
-  modalTitle: {
+  pageTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#111827",
+    color: "#0F172A",
   },
-  closeModalButton: {
-    padding: 4,
+  pageSubtitle: {
+    fontSize: 12,
+    color: "#94A3B8",
+    marginTop: 1,
   },
-  modalBody: {
-    padding: 16,
-  },
-  filterSection: {
-    marginBottom: 24,
-  },
-  filterLabel: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#374151",
-    marginBottom: 12,
-    textTransform: "uppercase",
-  },
-  chipWrap: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  chip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: "#F3F4F6",
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "transparent",
-  },
-  chipActive: {
-    backgroundColor: "#EFF6FF",
-    borderColor: "#3B82F6",
-  },
-  chipText: {
-    fontSize: 14,
-    color: "#4B5563",
-  },
-  chipTextActive: {
-    color: "#1D4ED8",
-    fontWeight: "500",
-  },
-  modalFooter: {
-    flexDirection: "row",
-    padding: 16,
-    borderTopWidth: 1,
-    borderTopColor: "#F3F4F6",
-    gap: 12,
+  tabBarContainer: {
     backgroundColor: "#FFFFFF",
+    position: "relative",
   },
-  modalBtn: {
-    flex: 1,
-    height: 44,
-    borderRadius: 8,
+  tabBarContent: {
+    paddingHorizontal: 16,
+    gap: 0,
+  },
+  tabItem: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    position: "relative",
   },
-  modalBtnSecondary: {
-    backgroundColor: "#F3F4F6",
+  tabIcon: {
+    marginRight: 6,
   },
-  modalBtnSecondaryText: {
-    color: "#4B5563",
-    fontWeight: "600",
-    fontSize: 15,
+  tabLabel: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#94A3B8",
   },
-  modalBtnPrimary: {
-    backgroundColor: "#1976D2",
+  tabLabelActive: {
+    color: "#1E293B",
+    fontWeight: "700",
   },
-  modalBtnPrimaryText: {
-    color: "#FFFFFF",
-    fontWeight: "600",
-    fontSize: 15,
+  activeIndicator: {
+    position: "absolute",
+    bottom: 0,
+    left: 12,
+    right: 12,
+    height: 2,
+    backgroundColor: "#1E293B",
+    borderTopLeftRadius: 2,
+    borderTopRightRadius: 2,
+  },
+  tabBorder: {
+    height: 1,
+    backgroundColor: "#F1F5F9",
+  },
+  tabContent: {
+    flex: 1,
   },
 });
