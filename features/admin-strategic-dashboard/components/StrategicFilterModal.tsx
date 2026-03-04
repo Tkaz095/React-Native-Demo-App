@@ -1,9 +1,15 @@
+import {
+    DEFAULT_FILTER,
+    GROUP_OPTIONS,
+    StrategicFilter,
+    TARGET_OPTIONS,
+    TIME_OPTIONS,
+} from "@/lib/data/strategic-filter.data";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
     Modal,
-    Platform,
-    SafeAreaView,
+    Pressable,
     ScrollView,
     StyleSheet,
     Text,
@@ -11,11 +17,7 @@ import {
     View,
 } from "react-native";
 
-export interface StrategicFilter {
-  time: string;
-  targets: string[];
-  groups: string[];
-}
+export type { StrategicFilter };
 
 export interface StrategicFilterModalProps {
   visible: boolean;
@@ -23,32 +25,18 @@ export interface StrategicFilterModalProps {
   onApply: (filters: StrategicFilter) => void;
 }
 
-const TIME_OPTIONS = ["7 ngày qua", "30 ngày qua", "90 ngày qua"];
-const TARGET_OPTIONS = [
-  "Tất cả đối tượng",
-  "Hội viên",
-  "Doanh nghiệp",
-  "Đối tác",
-];
-const GROUP_OPTIONS = [
-  "Tất cả nhóm",
-  "Hội viên Vàng",
-  "Hội viên Bạc",
-  "Hội viên Đồng",
-];
-
 export function StrategicFilterModal({
   visible,
   onClose,
   onApply,
 }: StrategicFilterModalProps) {
-  const [selectedTime, setSelectedTime] = useState(TIME_OPTIONS[0]);
-  const [selectedTargets, setSelectedTargets] = useState<string[]>([
-    TARGET_OPTIONS[0],
-  ]);
-  const [selectedGroups, setSelectedGroups] = useState<string[]>([
-    GROUP_OPTIONS[0],
-  ]);
+  const [selectedTime, setSelectedTime] = useState(DEFAULT_FILTER.time);
+  const [selectedTargets, setSelectedTargets] = useState<string[]>(
+    DEFAULT_FILTER.targets,
+  );
+  const [selectedGroups, setSelectedGroups] = useState<string[]>(
+    DEFAULT_FILTER.groups,
+  );
 
   const toggleSelection = (
     item: string,
@@ -80,249 +68,237 @@ export function StrategicFilterModal({
     <Modal
       visible={visible}
       animationType="slide"
-      presentationStyle="pageSheet"
+      transparent={true}
       onRequestClose={onClose}
     >
-      <SafeAreaView style={styles.container}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
-            <Ionicons name="close" size={24} color="#111827" />
-          </TouchableOpacity>
-          <Text style={styles.title}>Bộ lọc dữ liệu</Text>
-          <View style={styles.placeholder} />
-        </View>
-
-        {/* Content */}
-        <ScrollView
-          style={styles.content}
-          contentContainerStyle={styles.contentBody}
-        >
-          {/* Section: Thời gian */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Thời gian</Text>
-            <View style={styles.pillContainer}>
-              {TIME_OPTIONS.map((opt) => {
-                const isActive = selectedTime === opt;
-                return (
-                  <TouchableOpacity
-                    key={opt}
-                    style={[styles.pill, isActive && styles.pillActive]}
-                    onPress={() => setSelectedTime(opt)}
-                  >
-                    <Text
-                      style={[
-                        styles.pillText,
-                        isActive && styles.pillTextActive,
-                      ]}
-                    >
-                      {opt}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          </View>
-
-          {/* Section: Đối tượng */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Đối tượng</Text>
-            <View style={styles.pillContainer}>
-              {TARGET_OPTIONS.map((opt, i) => {
-                const isActive = selectedTargets.includes(opt);
-                return (
-                  <TouchableOpacity
-                    key={opt}
-                    style={[styles.pill, isActive && styles.pillActive]}
-                    onPress={() =>
-                      toggleSelection(
-                        opt,
-                        selectedTargets,
-                        setSelectedTargets,
-                        i === 0,
-                      )
-                    }
-                  >
-                    <Text
-                      style={[
-                        styles.pillText,
-                        isActive && styles.pillTextActive,
-                      ]}
-                    >
-                      {opt}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-            <TouchableOpacity style={styles.viewMoreBtn}>
-              <Text style={styles.viewMoreText}>Xem thêm</Text>
+      <View style={styles.modalOverlay}>
+        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+        <View style={styles.modalContent}>
+          {/* Header */}
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Bộ lọc dữ liệu</Text>
+            <TouchableOpacity onPress={onClose} style={styles.closeModalButton}>
+              <Ionicons name="close" size={24} color="#6B7280" />
             </TouchableOpacity>
           </View>
 
-          {/* Section: Nhóm hội viên */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Nhóm hội viên</Text>
-            <View style={styles.pillContainer}>
-              {GROUP_OPTIONS.map((opt, i) => {
-                const isActive = selectedGroups.includes(opt);
-                return (
-                  <TouchableOpacity
-                    key={opt}
-                    style={[styles.pill, isActive && styles.pillActive]}
-                    onPress={() =>
-                      toggleSelection(
-                        opt,
-                        selectedGroups,
-                        setSelectedGroups,
-                        i === 0,
-                      )
-                    }
-                  >
-                    <Text
-                      style={[
-                        styles.pillText,
-                        isActive && styles.pillTextActive,
-                      ]}
-                    >
-                      {opt}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          </View>
-        </ScrollView>
-
-        {/* Footer */}
-        <View style={styles.footer}>
-          <TouchableOpacity onPress={handleClear} style={styles.clearBtn}>
-            <Text style={styles.clearBtnText}>Xoá bộ lọc</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.applyBtn}
-            onPress={() => {
-              onApply({ selectedTime, selectedTargets, selectedGroups });
-              onClose();
-            }}
+          {/* Content */}
+          <ScrollView
+            style={styles.modalBody}
+            showsVerticalScrollIndicator={false}
           >
-            <Text style={styles.applyBtnText}>Hiển thị 320 kết quả</Text>
-          </TouchableOpacity>
+            {/* Section: Thời gian */}
+            <View style={styles.filterSection}>
+              <Text style={styles.filterLabel}>Thời gian</Text>
+              <View style={styles.chipWrap}>
+                {TIME_OPTIONS.map((opt) => {
+                  const isActive = selectedTime === opt;
+                  return (
+                    <TouchableOpacity
+                      key={opt}
+                      style={[styles.chip, isActive && styles.chipActive]}
+                      onPress={() => setSelectedTime(opt)}
+                    >
+                      <Text
+                        style={[
+                          styles.chipText,
+                          isActive && styles.chipTextActive,
+                        ]}
+                      >
+                        {opt}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </View>
+
+            {/* Section: Đối tượng */}
+            <View style={styles.filterSection}>
+              <Text style={styles.filterLabel}>Đối tượng</Text>
+              <View style={styles.chipWrap}>
+                {TARGET_OPTIONS.map((opt, i) => {
+                  const isActive = selectedTargets.includes(opt);
+                  return (
+                    <TouchableOpacity
+                      key={opt}
+                      style={[styles.chip, isActive && styles.chipActive]}
+                      onPress={() =>
+                        toggleSelection(
+                          opt,
+                          selectedTargets,
+                          setSelectedTargets,
+                          i === 0,
+                        )
+                      }
+                    >
+                      <Text
+                        style={[
+                          styles.chipText,
+                          isActive && styles.chipTextActive,
+                        ]}
+                      >
+                        {opt}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </View>
+
+            {/* Section: Nhóm hội viên */}
+            <View style={styles.filterSection}>
+              <Text style={styles.filterLabel}>Nhóm hội viên</Text>
+              <View style={styles.chipWrap}>
+                {GROUP_OPTIONS.map((opt, i) => {
+                  const isActive = selectedGroups.includes(opt);
+                  return (
+                    <TouchableOpacity
+                      key={opt}
+                      style={[styles.chip, isActive && styles.chipActive]}
+                      onPress={() =>
+                        toggleSelection(
+                          opt,
+                          selectedGroups,
+                          setSelectedGroups,
+                          i === 0,
+                        )
+                      }
+                    >
+                      <Text
+                        style={[
+                          styles.chipText,
+                          isActive && styles.chipTextActive,
+                        ]}
+                      >
+                        {opt}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </View>
+          </ScrollView>
+
+          {/* Footer */}
+          <View style={styles.modalFooter}>
+            <TouchableOpacity
+              style={[styles.modalBtn, styles.modalBtnSecondary]}
+              onPress={handleClear}
+            >
+              <Text style={styles.modalBtnSecondaryText}>Xóa bộ lọc</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.modalBtn, styles.modalBtnPrimary]}
+              onPress={() => {
+                onApply({ selectedTime, selectedTargets, selectedGroups });
+                onClose();
+              }}
+            >
+              <Text style={styles.modalBtnPrimaryText}>Áp dụng</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </SafeAreaView>
+      </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  modalOverlay: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "transparent",
+    justifyContent: "flex-end",
   },
-  header: {
+  modalContent: {
+    backgroundColor: "#FFFFFF",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: "90%",
+  },
+  modalHeader: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 14,
+    padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#F3F4F6",
-    ...Platform.select({
-      android: { paddingTop: 40 },
-    }),
   },
-  closeBtn: {
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#111827",
+  },
+  closeModalButton: {
     padding: 4,
   },
-  placeholder: {
-    width: 32,
+  modalBody: {
+    padding: 16,
   },
-  title: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#111827",
+  filterSection: {
+    marginBottom: 24,
   },
-  content: {
-    flex: 1,
-  },
-  contentBody: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-  section: {
-    marginBottom: 28,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#111827",
+  filterLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#374151",
     marginBottom: 12,
+    textTransform: "uppercase",
   },
-  pillContainer: {
+  chipWrap: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 10,
+    gap: 8,
   },
-  pill: {
+  chip: {
     paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 24,
+    paddingVertical: 8,
+    backgroundColor: "#F3F4F6",
+    borderRadius: 20,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
-    backgroundColor: "#FFFFFF",
+    borderColor: "transparent",
   },
-  pillActive: {
-    borderColor: "#111827",
-    backgroundColor: "#111827",
+  chipActive: {
+    backgroundColor: "#EFF6FF",
+    borderColor: "#3B82F6",
   },
-  pillText: {
+  chipText: {
     fontSize: 14,
-    color: "#374151",
+    color: "#4B5563",
+  },
+  chipTextActive: {
+    color: "#1D4ED8",
     fontWeight: "500",
   },
-  pillTextActive: {
-    color: "#FFFFFF",
-  },
-  viewMoreBtn: {
-    marginTop: 12,
-    alignSelf: "flex-start",
-  },
-  viewMoreText: {
-    fontSize: 14,
-    color: "#4F46E5",
-    fontWeight: "600",
-  },
-  footer: {
+  modalFooter: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    padding: 16,
     borderTopWidth: 1,
-    borderTopColor: "#E5E7EB",
+    borderTopColor: "#F3F4F6",
+    gap: 12,
     backgroundColor: "#FFFFFF",
-    ...Platform.select({
-      ios: { paddingBottom: 32 },
-    }),
   },
-  clearBtn: {
-    paddingVertical: 12,
+  modalBtn: {
+    flex: 1,
+    height: 44,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  clearBtnText: {
-    fontSize: 15,
+  modalBtnSecondary: {
+    backgroundColor: "#F3F4F6",
+  },
+  modalBtnSecondaryText: {
+    color: "#4B5563",
     fontWeight: "600",
-    color: "#111827",
-    textDecorationLine: "underline",
-  },
-  applyBtn: {
-    backgroundColor: "#111827",
-    paddingHorizontal: 24,
-    paddingVertical: 14,
-    borderRadius: 30,
-  },
-  applyBtnText: {
     fontSize: 15,
-    fontWeight: "700",
+  },
+  modalBtnPrimary: {
+    backgroundColor: "#1976D2",
+  },
+  modalBtnPrimaryText: {
     color: "#FFFFFF",
+    fontWeight: "600",
+    fontSize: 15,
   },
 });
