@@ -18,14 +18,14 @@ export const REVENUE_PIE_CHART_MOCK = [
 ];
 
 export const TRANSACTIONS_LIST_MOCK: Transaction[] = [
-    { id: "tx-001", memberName: "Công ty Cổ phần Đầu tư DEF", type: "TG", amount: 3000000, status: "success" },
-    { id: "tx-002", memberName: "Tập đoàn XYZ Corporation", type: "TG", amount: 2000000, status: "success" },
-    { id: "tx-003", memberName: "Công ty TNHH ABC Technology", type: "TG", amount: 1500000, status: "success" },
-    { id: "tx-004", memberName: "Công ty CP Logistics GHI", type: "HH", amount: 2100000, status: "success" },
-    { id: "tx-005", memberName: "Thép Hòa Phát", type: "HV", amount: 15000000, status: "success" },
-    { id: "tx-006", memberName: "Bất động sản Nam Long", type: "HH", amount: 5500000, status: "success" },
-    { id: "tx-007", memberName: "Bất động sản Nam Long", type: "HV", amount: 5000000, status: "success" },
-    { id: "tx-008", memberName: "Tập đoàn MNO Holdings", type: "HH", amount: 2500000, status: "success" },
-    { id: "tx-009", memberName: "Công ty CP Công nghệ Sao Việt", type: "HV", amount: 5000000, status: "success" },
-    { id: "tx-010", memberName: "Công ty TNHH ARC Infrastructure", type: "HH", amount: 1800000, status: "success" },
+    { id: "tx-001", memberName: "Công ty Cổ phần Đầu tư DEF", type: "TG", amount: 3000000, status: "success", date: "04/03/2026" },
+    { id: "tx-002", memberName: "Tập đoàn XYZ Corporation", type: "TG", amount: 2000000, status: "success", date: "04/03/2026" },
+    { id: "tx-003", memberName: "Công ty TNHH ABC Technology", type: "TG", amount: 1500000, status: "success", date: "03/03/2026" },
+    { id: "tx-004", memberName: "Công ty CP Logistics GHI", type: "HH", amount: 2100000, status: "success", date: "01/03/2026" },
+    { id: "tx-005", memberName: "Thép Hòa Phát", type: "HV", amount: 15000000, status: "success", date: "28/02/2026" },
+    { id: "tx-006", memberName: "Bất động sản Nam Long", type: "HH", amount: 5500000, status: "success", date: "25/02/2026" },
+    { id: "tx-007", memberName: "Bất động sản Nam Long", type: "HV", amount: 5000000, status: "success", date: "20/02/2026" },
+    { id: "tx-008", memberName: "Tập đoàn MNO Holdings", type: "HH", amount: 2500000, status: "success", date: "15/02/2026" },
+    { id: "tx-009", memberName: "Công ty CP Công nghệ Sao Việt", type: "HV", amount: 5000000, status: "success", date: "10/02/2026" },
+    { id: "tx-010", memberName: "Công ty TNHH ARC Infrastructure", type: "HH", amount: 1800000, status: "success", date: "05/02/2026" },
 ];
