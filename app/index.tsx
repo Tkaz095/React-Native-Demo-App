@@ -227,9 +227,9 @@ const getStyles = (
     mainContent: {
       flex: 1,
       justifyContent: "space-between",
-      paddingHorizontal: isDesktop ? "10%" : scale(24),
-      paddingBottom: scale(20), // Padding off the bottom of SafeAreaView
-      paddingTop: scale(16),
+      paddingHorizontal: isDesktop ? "10%" : 24,
+      paddingBottom: 20,
+      paddingTop: 24,
     },
     header: {
       flexDirection: "row",
@@ -243,17 +243,17 @@ const getStyles = (
       flex: 1,
     },
     logo: {
-      width: scale(36),
-      height: scale(36),
-      borderRadius: scale(8),
+      width: 36,
+      height: 36,
+      borderRadius: 8,
       backgroundColor: "#1976D2",
       alignItems: "center",
       justifyContent: "center",
-      marginRight: scale(10),
+      marginRight: 10,
     },
     logoText: {
       color: "#FFF",
-      fontSize: moderateScale(18),
+      fontSize: 18,
       fontWeight: "bold",
     },
     headerText: {
@@ -261,17 +261,17 @@ const getStyles = (
     },
     headerTitle: {
       color: "#FFF",
-      fontSize: moderateScale(15),
+      fontSize: 15,
       fontWeight: "700",
     },
     headerSubtitle: {
       color: "rgba(255, 255, 255, 0.75)",
-      fontSize: moderateScale(9),
+      fontSize: 9,
       fontWeight: "600",
       letterSpacing: 1,
     },
     menuButton: {
-      padding: scale(12),
+      padding: 12,
     },
     heroContent: {
       flex: 1,
