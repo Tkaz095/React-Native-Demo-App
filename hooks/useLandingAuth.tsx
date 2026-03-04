@@ -1,4 +1,5 @@
 import AuthModal from "@/features/auth/components/AuthModal";
+import { User } from "@/features/auth/data/mockUsers";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 
@@ -9,37 +10,39 @@ type AuthMode = "login" | "signup";
  * Returns handlers to pass to DrawerMenu and a JSX element to render.
  */
 export function useLandingAuth() {
-   const router = useRouter();
-   const [showAuthModal, setShowAuthModal] = useState(false);
-   const [authMode, setAuthMode] = useState<AuthMode>("login");
+  const router = useRouter();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authMode, setAuthMode] = useState<AuthMode>("login");
 
-   const openLogin = () => {
-      setAuthMode("login");
-      setShowAuthModal(true);
-   };
+  const openLogin = () => {
+    setAuthMode("login");
+    setShowAuthModal(true);
+  };
 
-   const openRegister = () => {
-      setAuthMode("signup");
-      setShowAuthModal(true);
-   };
+  const openRegister = () => {
+    setAuthMode("signup");
+    setShowAuthModal(true);
+  };
 
-   const handleAuthSuccess = (user: any) => {
-      setShowAuthModal(false);
-      if (user.role === "admin") {
-         router.replace("/admin/strategic-dashboard" as any);
-      } else {
-         router.replace("/(tabs)" as any);
-      }
-   };
+  const handleAuthSuccess = (user: User) => {
+    setShowAuthModal(false);
+    if (user.role === "admin") {
+      router.replace(
+        "/admin/strategic-dashboard" as "/admin/strategic-dashboard",
+      );
+    } else {
+      router.replace("/(tabs)" as "/(tabs)");
+    }
+  };
 
-   const AuthModalComponent = (
-      <AuthModal
-         visible={showAuthModal}
-         onClose={() => setShowAuthModal(false)}
-         onAuthSuccess={handleAuthSuccess}
-         initialMode={authMode}
-      />
-   );
+  const AuthModalComponent = (
+    <AuthModal
+      visible={showAuthModal}
+      onClose={() => setShowAuthModal(false)}
+      onAuthSuccess={handleAuthSuccess}
+      initialMode={authMode}
+    />
+  );
 
-   return { openLogin, openRegister, AuthModalComponent };
+  return { openLogin, openRegister, AuthModalComponent };
 }

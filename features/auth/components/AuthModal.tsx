@@ -1,20 +1,21 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import {
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  StyleSheet,
-  TouchableOpacity,
-  View,
+    KeyboardAvoidingView,
+    Modal,
+    Platform,
+    StyleSheet,
+    TouchableOpacity,
+    View,
 } from "react-native";
+import { User } from "../data/mockUsers";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 
 export interface AuthModalProps {
   visible: boolean;
   onClose: () => void;
-  onAuthSuccess: (user: any, token: string) => void;
+  onAuthSuccess: (user: User, token: string) => void;
   initialMode?: "login" | "signup";
 }
 
@@ -35,7 +36,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
     }
   }, [visible, initialMode]);
 
-  const handleAuthSuccess = (user: any, token: string) => {
+  const handleAuthSuccess = (user: User, token: string) => {
     onAuthSuccess(user, token);
     // Reset mode when modal closes
     setTimeout(() => setMode("login"), 300);

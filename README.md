@@ -42,26 +42,29 @@ Dự án được tổ chức theo module tính năng thay vì loại file, giú
 
 ```text
 src/
-├── app/                  <-- EXPO ROUTER (Chỉ chứa định tuyến & Layout)
-│   ├── _layout.tsx       <-- Cấu hình Root (Fonts, Providers)
-│   ├── (tabs)/           <-- Điều hướng chính (Home, News, Profile)
-│   └── (auth)/           <-- Luồng đăng nhập/đăng ký
+├── app/                     # Routing only
 │
-├── features/             <-- LOGIC NGHIỆP VỤ (Domain Driven)
-│   ├── business/         <-- Tính năng Doanh nghiệp
-│   │   ├── components/   <-- UI riêng cho tính năng này
-│   │   ├── hooks/        <-- useBusinessData.ts
-│   │   └── services/     <-- business.api.ts
-│   └── news/             <-- Tính năng Tin tức
+├── features/                # Domain modules
+│   ├── business/
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   ├── services/
+│   │   ├── types.ts
+│   │   └── schemas.ts
 │
-├── components/           <-- DÙNG CHUNG (Shared UI)
-│   ├── ui/               <-- Các nguyên tử UI (Button, Input, Card)
-│   └── shared/           <-- Header, Loading, EmptyState
+├── components/              # Shared UI
+│   ├── ui/
+│   └── shared/
 │
-├── constants/            <-- Bảng màu, Kích thước, Cấu hình chung
-├── hooks/                <-- Các Hook dùng chung toàn hệ thống
-└── assets/               <-- Hình ảnh, Fonts, Icons
+├── providers/               # Global Providers
+├── lib/                     # Config, API, QueryClient
+├── store/                   # Global state (future)
+├── hooks/                   # Shared hooks
+├── constants/
+├── types/                   # Global types
+└── assets/
 ```
+
 ---
 
 ## Luồng dữ liệu & Hiệu suất
