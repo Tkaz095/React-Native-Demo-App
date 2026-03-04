@@ -7,6 +7,7 @@ export interface Transaction {
     type: TransactionType;
     amount: number;
     status: TransactionStatus;
+    date: string;
 }
 
 export interface RevenueStats {
