@@ -96,7 +96,12 @@ export default function MemberEditPage() {
     value: string;
     onChangeText: (text: string) => void;
     multiline?: boolean;
-    keyboardType?: "default" | "email-address" | "numeric" | "phone-pad";
+    keyboardType?:
+      | "default"
+      | "email-address"
+      | "numeric"
+      | "phone-pad"
+      | "url";
   }
 
   const InputField = ({

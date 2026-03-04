@@ -1,20 +1,23 @@
 import {
-    DEFAULT_FILTER,
-    GROUP_OPTIONS,
-    StrategicFilter,
-    TARGET_OPTIONS,
-    TIME_OPTIONS,
+   DEFAULT_FILTER,
+   GROUP_OPTIONS,
+   GroupOption,
+   StrategicFilter,
+   TARGET_OPTIONS,
+   TargetOption,
+   TIME_OPTIONS,
+   TimeOption,
 } from "@/lib/data/strategic-filter.data";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
-    Modal,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+   Modal,
+   Pressable,
+   ScrollView,
+   StyleSheet,
+   Text,
+   TouchableOpacity,
+   View,
 } from "react-native";
 
 export type { StrategicFilter };
@@ -30,18 +33,20 @@ export function StrategicFilterModal({
   onClose,
   onApply,
 }: StrategicFilterModalProps) {
-  const [selectedTime, setSelectedTime] = useState(DEFAULT_FILTER.time);
-  const [selectedTargets, setSelectedTargets] = useState<string[]>(
+  const [selectedTime, setSelectedTime] = useState<TimeOption>(
+    DEFAULT_FILTER.time,
+  );
+  const [selectedTargets, setSelectedTargets] = useState<TargetOption[]>(
     DEFAULT_FILTER.targets,
   );
-  const [selectedGroups, setSelectedGroups] = useState<string[]>(
+  const [selectedGroups, setSelectedGroups] = useState<GroupOption[]>(
     DEFAULT_FILTER.groups,
   );
 
-  const toggleSelection = (
-    item: string,
-    current: string[],
-    setFn: (val: string[]) => void,
+  const toggleSelection = <T extends string>(
+    item: T,
+    current: T[],
+    setFn: (val: T[]) => void,
     isAllItem: boolean = false,
   ) => {
     if (isAllItem) {
@@ -191,7 +196,11 @@ export function StrategicFilterModal({
             <TouchableOpacity
               style={[styles.modalBtn, styles.modalBtnPrimary]}
               onPress={() => {
-                onApply({ selectedTime, selectedTargets, selectedGroups });
+                onApply({
+                  time: selectedTime,
+                  targets: selectedTargets,
+                  groups: selectedGroups,
+                });
                 onClose();
               }}
             >

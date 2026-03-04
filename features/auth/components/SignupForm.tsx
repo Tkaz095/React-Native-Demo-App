@@ -68,10 +68,12 @@ const SignupForm: React.FC<SignupFormProps> = ({
 
       const mockUser = {
         id: Date.now().toString(),
+        username: email.split("@")[0],
         name: fullName,
         email,
         phone,
-        role: "member",
+        password: password,
+        role: "member" as const,
       };
       const mockToken = `token_${Date.now()}`;
 

@@ -90,7 +90,6 @@ export default function EventEditPage() {
     value: string;
     label: string;
     subtext: string;
-    icon: string;
     activeColor: string;
   }
 
@@ -98,7 +97,6 @@ export default function EventEditPage() {
     value,
     label,
     subtext,
-    icon,
     activeColor,
   }: TypeOptionProps) => {
     const isActive = formData.type === value;
