@@ -14,6 +14,7 @@ const TABS = [
     { name: 'Giao dịch', path: '/admin/transactions', icon: 'receipt-outline' },
     { name: 'Bài đăng', path: '/admin/posts', icon: 'document-text-outline' },
     { name: 'Sự kiện', path: '/admin/events', icon: 'calendar-outline' },
+    { name: 'Gói', path: '/admin/service-packages', icon: 'cube-outline' },
 ];
 
 export function AdminShell({ children }: AdminShellProps) {
